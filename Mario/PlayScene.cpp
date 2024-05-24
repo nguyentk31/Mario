@@ -9,6 +9,8 @@
 #include "Portal.h"
 #include "Coin.h"
 #include "Platform.h"
+#include "Ground.h"
+#include "Backgrounds.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -95,7 +97,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	vector<string> tokens = split(line);
 
 	// skip invalid lines - an object set must have at least id, x, y
-	if (tokens.size() < 2) return;
+	if (tokens.size() < 2) {
+		DebugOut(L"[ERROR] Invalid object set: %s\n", ToWSTR(line).c_str());
+		return;
+	}
 
 	int object_type = atoi(tokens[0].c_str());
 	float x = (float)atof(tokens[1].c_str());
@@ -122,7 +127,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	case OBJECT_TYPE_PLATFORM:
 	{
-
 		float cell_width = (float)atof(tokens[3].c_str());
 		float cell_height = (float)atof(tokens[4].c_str());
 		int length = atoi(tokens[5].c_str());
@@ -139,6 +143,30 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
+	case OBJECT_TYPE_GROUND:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int lengthX = atoi(tokens[5].c_str());
+		int lengthY = atoi(tokens[6].c_str());
+		int spriteIdMap[2][3];
+		for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 3; j++)
+				spriteIdMap[i][j] = atoi(tokens[7 + i * 3 + j].c_str());
+		obj = new CGround(x, y, cell_width, cell_height, lengthX, lengthY, spriteIdMap);
+		DebugOut(L"[INFO] Ground object has been created!\n");
+		
+		break;
+	}
+	case OBJECT_TYPE_BACKGROUNDS:
+	{
+		DebugOut(L"[INFO] Backgrounds object has been created!\n");
+		int spriteId = atoi(tokens[3].c_str());
+		obj = new CBackgrounds(x, y, spriteId);
+		
+		break;
+	}
+
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
@@ -147,7 +175,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id);
 	}
 	break;
-
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
@@ -260,7 +287,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 0.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, 224.0f /*cy*/);
 
 	PurgeDeletedObjects();
 }
