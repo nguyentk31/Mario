@@ -1,6 +1,5 @@
 #include "Ground.h"
 
-#include "Sprite.h"
 #include "Sprites.h"
 
 void CGround::Render()

@@ -1,10 +1,6 @@
 #include "Backgrounds.h"
 
-#include "Sprite.h"
 #include "Sprites.h"
-
-#include "Textures.h"
-
 
 void CBackgrounds::Render()
 {

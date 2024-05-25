@@ -118,6 +118,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		obj = new CMario(x,y); 
 		player = (CMario*)obj;  
+		MarioObjPos = objects.size();
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
@@ -163,7 +164,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Backgrounds object has been created!\n");
 		int spriteId = atoi(tokens[3].c_str());
 		obj = new CBackgrounds(x, y, spriteId);
-		
 		break;
 	}
 
@@ -264,7 +264,7 @@ void CPlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = 1; i < objects.size(); i++)
+	for (size_t i = MarioObjPos+1; i < objects.size(); i++)
 	{
 		coObjects.push_back(objects[i]);
 	}
