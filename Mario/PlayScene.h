@@ -8,6 +8,7 @@
 #include "Goomba.h"
 #include "Ground.h"
 #include "Backgrounds.h"
+#include "Box.h"
 //#include "Koopas.h"
 
 

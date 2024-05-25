@@ -1,7 +1,5 @@
 #include "Ground.h"
 
-#include "Sprites.h"
-
 void CGround::Render()
 {
 	if (this->lengthX <= 0 || this->lengthY <= 0) return;

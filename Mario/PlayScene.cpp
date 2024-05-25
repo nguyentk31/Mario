@@ -11,6 +11,7 @@
 #include "Platform.h"
 #include "Ground.h"
 #include "Backgrounds.h"
+#include "Box.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -166,7 +167,18 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBackgrounds(x, y, spriteId);
 		break;
 	}
-
+	case OBJECT_TYPE_BOX:
+	{
+		float cell_width = (float)atof(tokens[3].c_str());
+		float cell_height = (float)atof(tokens[4].c_str());
+		int lengthX = atoi(tokens[5].c_str());
+		int lengthY = atoi(tokens[6].c_str());
+		int spriteColorId = atoi(tokens[7].c_str());
+		bool rightShadow = atoi(tokens[8].c_str());
+		bool bottomShadow = atoi(tokens[9].c_str());
+		obj = new CBox(x, y, cell_width, cell_height, lengthX, lengthY, spriteColorId, rightShadow, bottomShadow);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
