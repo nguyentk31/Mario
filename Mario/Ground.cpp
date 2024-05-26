@@ -20,7 +20,6 @@ void CGround::Render()
 		xx = x;
 		yy += this->cellHeight;
 	}
-
 }
 
 void CGround::GetBoundingBox(float& l, float& t, float& r, float& b)

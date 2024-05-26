@@ -6,6 +6,9 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
+#include "Coin.h"
+#include "Platform.h"
+#include "Portal.h"
 #include "Ground.h"
 #include "Backgrounds.h"
 #include "Box.h"
@@ -20,6 +23,7 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 	size_t MarioObjPos = 0;
+	int uncolliableObjects = 0;
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);

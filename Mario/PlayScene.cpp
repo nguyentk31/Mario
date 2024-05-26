@@ -6,12 +6,6 @@
 #include "Utils.h"
 #include "Textures.h"
 #include "Sprites.h"
-#include "Portal.h"
-#include "Coin.h"
-#include "Platform.h"
-#include "Ground.h"
-#include "Backgrounds.h"
-#include "Box.h"
 
 #include "SampleKeyEventHandler.h"
 
@@ -165,6 +159,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		DebugOut(L"[INFO] Backgrounds object has been created!\n");
 		int spriteId = atoi(tokens[3].c_str());
 		obj = new CBackgrounds(x, y, spriteId);
+		uncolliableObjects++;
 		break;
 	}
 	case OBJECT_TYPE_BOX:
@@ -276,8 +271,9 @@ void CPlayScene::Update(DWORD dt)
 	// TO-DO: This is a "dirty" way, need a more organized way 
 
 	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = MarioObjPos+1; i < objects.size(); i++)
+	for (size_t i = uncolliableObjects; i < objects.size(); i++)
 	{
+		if (i == MarioObjPos) continue;
 		coObjects.push_back(objects[i]);
 	}
 
