@@ -14,6 +14,7 @@ Object-CoinBox.txt
 # type	x	y	extra_settings per object type
 # type: 0 = Mario , 1 = Brick, 2 = Goomba, 3 = Koopas
 # See OBJECT_TYPE constants in AssetIDs.h
+# Mario add at the end
 
 #Backgrounds-BigTree
 7	40	360	71100
@@ -141,9 +142,6 @@ Object-CoinBox.txt
 8	408	376	16	16	4	1	3000	1	0
 8	520	392	16	16	4	0	3000	1	0
 
-# MARIO
-0	600	320
-
 #Platform
 5	90	256	16	15	3	51000	52000	53000
 #5	120	90	16	16	8	20001	20001	20001
@@ -164,3 +162,6 @@ Object-CoinBox.txt
 9	664	392
 
 9	712	360
+
+# MARIO
+0	600	320

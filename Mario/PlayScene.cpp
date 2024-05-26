@@ -113,7 +113,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		}
 		obj = new CMario(x,y); 
 		player = (CMario*)obj;  
-		MarioObjPos = objects.size();
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
@@ -150,16 +149,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			for (int j = 0; j < 3; j++)
 				spriteIdMap[i][j] = atoi(tokens[7 + i * 3 + j].c_str());
 		obj = new CGround(x, y, cell_width, cell_height, lengthX, lengthY, spriteIdMap);
-		DebugOut(L"[INFO] Ground object has been created!\n");
 		
 		break;
 	}
 	case OBJECT_TYPE_BACKGROUNDS:
 	{
-		DebugOut(L"[INFO] Backgrounds object has been created!\n");
 		int spriteId = atoi(tokens[3].c_str());
 		obj = new CBackgrounds(x, y, spriteId);
-		uncolliableObjects++;
 		break;
 	}
 	case OBJECT_TYPE_BOX:
@@ -272,19 +268,27 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// We know that Mario is the first object in the list hence we won't add him into the colliable object list
-	// TO-DO: This is a "dirty" way, need a more organized way 
-
-	vector<LPGAMEOBJECT> coObjects;
-	for (size_t i = uncolliableObjects; i < objects.size(); i++)
-	{
-		if (i == MarioObjPos) continue;
-		coObjects.push_back(objects[i]);
-	}
-
+	// Create non-background object list and collision handle needed list
+	vector<LPGAMEOBJECT> nonbgObjects;
+	vector<LPGAMEOBJECT> colObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
-		objects[i]->Update(dt, &coObjects);
+		if (objects[i]->IsBackground())
+			continue;
+		if (objects[i]->IsCollidable())
+			colObjects.push_back(objects[i]);
+		else
+			nonbgObjects.push_back(objects[i]);
+	}
+	nonbgObjects.insert(nonbgObjects.end(), colObjects.begin(), colObjects.end());
+
+	// last added first handled so that Mario is always updated first
+	// remove update object from nonbgObjects to optimize
+	for (size_t i = colObjects.size(); i > 0; i--)
+	{
+		LPGAMEOBJECT obj = colObjects[i - 1];
+		nonbgObjects.pop_back();
+		obj->Update(dt, &nonbgObjects);
 	}
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)

@@ -20,6 +20,7 @@ public:
 	void Update(DWORD dt) {}
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
 	int IsBlocking() { return 0; }
+	int IsBackground() { return 1; }
 };
 
 typedef CBackgrounds* LPBACKGROUND;

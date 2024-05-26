@@ -23,8 +23,6 @@ protected:
 	LPGAMEOBJECT player;					
 
 	vector<LPGAMEOBJECT> objects;
-	size_t MarioObjPos = 0;
-	int uncolliableObjects = 0;
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);

@@ -50,6 +50,8 @@ public:
 	virtual void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects = NULL) {};
 	virtual void Render() = 0;
 	virtual void SetState(int state) { this->state = state; }
+	// Whether background or not
+	virtual int IsBackground() { return 0; }
 
 	//
 	// Collision ON or OFF ? This can change depending on object's state. For example: die
