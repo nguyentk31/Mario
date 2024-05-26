@@ -12,6 +12,7 @@
 #include "Ground.h"
 #include "Backgrounds.h"
 #include "Box.h"
+#include "Object-CoinBox.h"
 //#include "Koopas.h"
 
 

@@ -174,6 +174,11 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBox(x, y, cell_width, cell_height, lengthX, lengthY, spriteColorId, rightShadow, bottomShadow);
 		break;
 	}
+	case OBJECT_TYPE_COIN_BOX:
+	{
+		obj = new CCoinBox(x, y);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());

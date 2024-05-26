@@ -1,0 +1,13 @@
+# id	left	top	right	bottom	texture_id
+[SPRITES]
+# Alive
+91100	1140	1	1155	16	30
+91200	1157	1	1172	16	30
+91300	1174	1	1189	16	30
+91400	1191	1	1206	16	30
+# Dead
+92000	1208	1	1223	16	30
+
+# ani_id	sprite1_id	time1	sprite2_id	time2	...
+[ANIMATIONS]
+91000	91100	100	91200	100	91300	100	91400	100
