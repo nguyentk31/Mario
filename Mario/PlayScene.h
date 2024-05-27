@@ -39,6 +39,8 @@ public:
 	virtual void Update(DWORD dt);
 	virtual void Render();
 	virtual void Unload();
+	// Add new object to the current scene
+	void AddObject(LPGAMEOBJECT obj);
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

@@ -64,9 +64,13 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 {
 	CQuestionBlock* QuestionBlock = dynamic_cast<CQuestionBlock*>(e->obj);
-	if (QuestionBlock->GetState() == COIN_BOX_STATE_ALIVE && e->ny > 0)
+	if (QuestionBlock->GetState() == QUESTION_BLOCK_STATE_ALIVE && e->ny > 0)
 	{
-		QuestionBlock->SetState(COIN_BOX_STATE_BOUNCING);
+		QuestionBlock->SetState(QUESTION_BLOCK_STATE_BOUNCING);
+		if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_COIN)
+		{
+			coin++;
+		}
 	}
 }
 

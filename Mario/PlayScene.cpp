@@ -172,7 +172,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
-		obj = new CQuestionBlock(x, y);
+		int type = atoi(tokens[3].c_str());
+		obj = new CQuestionBlock(x, y, type);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
@@ -313,6 +314,12 @@ void CPlayScene::Render()
 {
 	for (int i = 0; i < objects.size(); i++)
 		objects[i]->Render();
+}
+
+// Add new object to current scene
+void CPlayScene::AddObject(LPGAMEOBJECT obj)
+{
+	objects.push_back(obj);
 }
 
 /*
