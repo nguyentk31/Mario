@@ -14,12 +14,12 @@
 #define BOUCING_SPEED 0.1f
 #define BOUCING_DISTANCE 10 // Pixels
 
-class CCoinBox : public CGameObject
+class CQuestionBlock : public CGameObject
 {
 protected:
 	float originalY;
 public:
-	CCoinBox(float x, float y) : CGameObject(x, y) {
+	CQuestionBlock(float x, float y) : CGameObject(x, y) {
 		this->state = COIN_BOX_STATE_ALIVE;
 		this->originalY = y;
 	}
@@ -32,4 +32,4 @@ public:
 	void SetState(int state);
 };
 
-typedef CCoinBox* LPCOINBOX;
+typedef CQuestionBlock* LPQUESTIONBLOCK;

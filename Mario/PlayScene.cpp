@@ -170,9 +170,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CBox(x, y, cell_width, cell_height, lengthX, lengthY, spriteColorId, rightShadow, bottomShadow);
 		break;
 	}
-	case OBJECT_TYPE_COIN_BOX:
+	case OBJECT_TYPE_QUESTION_BLOCK:
 	{
-		obj = new CCoinBox(x, y);
+		obj = new CQuestionBlock(x, y);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:

@@ -1,7 +1,6 @@
-#include "Object-CoinBox.h"
-#include "debug.h"
+#include "Object-QuestionBlock.h"
 
-void CCoinBox::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
+void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	if ( this->state != COIN_BOX_STATE_BOUNCING )
 		return;
@@ -15,13 +14,11 @@ void CCoinBox::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		this->y = this->originalY;
 		SetState(COIN_BOX_STATE_DEAD);
 	}
-	// DebugOut(L"CoinBox: %f\n", this->y);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
-void CCoinBox::Render()
+void CQuestionBlock::Render()
 {
-	CSprites* s = CSprites::GetInstance();
 	CAnimations* animations = CAnimations::GetInstance();
 	if (this->state == COIN_BOX_STATE_ALIVE) {
 		animations->Get(ID_ANI_COIN_BOX_ALIVE)->Render(x, y);
@@ -31,17 +28,17 @@ void CCoinBox::Render()
 	}
 }
 
-void CCoinBox::OnNoCollision(DWORD dt)
+void CQuestionBlock::OnNoCollision(DWORD dt)
 {
 	y += vy * dt;
 }
 
-int CCoinBox::IsCollidable()
+int CQuestionBlock::IsCollidable()
 {
 	return (this->state == COIN_BOX_STATE_BOUNCING);
 }
 
-void CCoinBox::SetState(int state)
+void CQuestionBlock::SetState(int state)
 {
 	CGameObject::SetState(state);
 	switch (state)
@@ -55,7 +52,7 @@ void CCoinBox::SetState(int state)
 	}
 }
 
-void CCoinBox::GetBoundingBox(float& l, float& t, float& r, float& b)
+void CQuestionBlock::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
 	l = x - COIN_BOX_WIDTH / 2;
 	t = y - COIN_BOX_HEIGHT / 2;

@@ -7,7 +7,7 @@ ground.txt
 backgrounds.txt
 coin.txt
 box.txt
-Object-CoinBox.txt
+Object-QuestionBlock.txt
 Object-Coin.txt
 
 #
@@ -150,7 +150,7 @@ Object-Coin.txt
 # Coin
 4	1080	328
 
-# Coin Box
+# QuestionBlock
 9	184	360
 9	200	360
 

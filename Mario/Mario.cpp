@@ -6,7 +6,7 @@
 
 #include "Goomba.h"
 #include "Portal.h"
-#include "Object-CoinBox.h"
+#include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
 
 #include "Collision.h"
@@ -55,18 +55,18 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithCoin(e);
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
-	else if (dynamic_cast<CCoinBox*>(e->obj))
+	else if (dynamic_cast<CQuestionBlock*>(e->obj))
 	{
-		OnCollisionWithCoinBox(e);
+		OnCollisionWithQuestionBlock(e);
 	}
 }
 
-void CMario::OnCollisionWithCoinBox(LPCOLLISIONEVENT e)
+void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 {
-	CCoinBox* coinBox = dynamic_cast<CCoinBox*>(e->obj);
-	if (coinBox->GetState() == COIN_BOX_STATE_ALIVE && e->ny > 0)
+	CQuestionBlock* QuestionBlock = dynamic_cast<CQuestionBlock*>(e->obj);
+	if (QuestionBlock->GetState() == COIN_BOX_STATE_ALIVE && e->ny > 0)
 	{
-		coinBox->SetState(COIN_BOX_STATE_BOUNCING);
+		QuestionBlock->SetState(COIN_BOX_STATE_BOUNCING);
 	}
 }
 
