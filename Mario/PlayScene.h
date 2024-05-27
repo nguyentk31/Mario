@@ -6,13 +6,13 @@
 #include "Brick.h"
 #include "Mario.h"
 #include "Goomba.h"
-#include "Coin.h"
 #include "Platform.h"
 #include "Portal.h"
 #include "Ground.h"
 #include "Backgrounds.h"
 #include "Box.h"
 #include "Object-CoinBox.h"
+#include "Object-Coin.h"
 //#include "Koopas.h"
 
 

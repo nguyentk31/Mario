@@ -8,6 +8,7 @@ backgrounds.txt
 coin.txt
 box.txt
 Object-CoinBox.txt
+Object-Coin.txt
 
 #
 [OBJECTS]
@@ -142,13 +143,12 @@ Object-CoinBox.txt
 8	408	376	16	16	4	1	3000	1	0
 8	520	392	16	16	4	0	3000	1	0
 
-#Platform
-5	90	256	16	15	3	51000	52000	53000
-#5	120	90	16	16	8	20001	20001	20001
-
 #Ground
 6	8	424	16	16	39	1	61000	62000	63000	0	0	0
 6	632	408	16	16	29	2	61000	62000	63000	64000	65000	66000
+
+# Coin
+4	1080	328
 
 # Coin Box
 9	184	360

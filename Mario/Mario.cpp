@@ -5,9 +5,9 @@
 #include "Game.h"
 
 #include "Goomba.h"
-#include "Coin.h"
 #include "Portal.h"
 #include "Object-CoinBox.h"
+#include "Object-Coin.h"
 
 #include "Collision.h"
 
