@@ -146,6 +146,7 @@
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Object-Coin.h" />
+    <ClInclude Include="Object-Mushroom.h" />
     <ClInclude Include="Object-QuestionBlock.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayScene.h" />
@@ -173,6 +174,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Object-Coin.cpp" />
+    <ClCompile Include="Object-Mushroom.cpp" />
     <ClCompile Include="Object-QuestionBlock.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayScene.cpp" />

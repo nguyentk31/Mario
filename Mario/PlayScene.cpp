@@ -16,6 +16,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 {
 	player = NULL;
 	key_handler = new CSampleKeyHandler(this);
+	numbersOfObjects = vector<int>(50, 0);
 }
 
 
@@ -193,8 +194,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	// General object setup
 	obj->SetPosition(x, y);
 
-
-	objects.push_back(obj);
+	// Add object to the scene
+	AddObject(object_type, obj);
 }
 
 void CPlayScene::LoadAssets(LPCWSTR assetFile)
@@ -269,25 +270,28 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// Create non-background object list and collision handle needed list
+	// Create non-background object and collision handle needed list
 	vector<LPGAMEOBJECT> nonbgObjects;
-	vector<LPGAMEOBJECT> colObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (objects[i]->IsBackground())
 			continue;
 		if (objects[i]->IsCollidable())
-			colObjects.push_back(objects[i]);
-		else
 			nonbgObjects.push_back(objects[i]);
+		else
+			nonbgObjects.insert(nonbgObjects.begin(), objects[i]);
 	}
-	nonbgObjects.insert(nonbgObjects.end(), colObjects.begin(), colObjects.end());
 
 	// last added first handled so that Mario is always updated first
 	// remove update object from nonbgObjects to optimize
-	for (size_t i = colObjects.size(); i > 0; i--)
+	while (!nonbgObjects.empty())
 	{
-		LPGAMEOBJECT obj = colObjects[i - 1];
+		LPGAMEOBJECT obj = nonbgObjects.back();
+
+		if (!obj->IsCollidable()) {
+			break;
+		}
+
 		nonbgObjects.pop_back();
 		obj->Update(dt, &nonbgObjects);
 	}
@@ -317,9 +321,45 @@ void CPlayScene::Render()
 }
 
 // Add new object to current scene
-void CPlayScene::AddObject(LPGAMEOBJECT obj)
+void CPlayScene::AddObject(int object_type, LPGAMEOBJECT obj)
 {
-	objects.push_back(obj);
+	// Order of rendering objects
+	vector<int> order = {
+		OBJECT_TYPE_BACKGROUNDS,
+		OBJECT_TYPE_GROUND,
+		OBJECT_TYPE_BOX,
+		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_COIN,
+		OBJECT_TYPE_MUSHROOM,
+		OBJECT_TYPE_MARIO,
+	};
+
+	// Find the position to insert the new object
+	int pos = 0;
+	for (int i = 0; i < order.size(); i++)
+	{
+		if (order[i] == object_type)
+			break;
+		pos += numbersOfObjects[order[i]];
+
+	}
+
+	// Insert the new object
+	if (pos < objects.size())
+	{
+		objects.insert(objects.begin() + pos, obj);
+	}
+	else
+	{
+		objects.push_back(obj);
+	}
+
+	if (object_type == OBJECT_TYPE_MUSHROOM) {
+		DebugOut(L"Add mushroom at %d\n", pos);
+	}
+
+	// Increase the number of objects of this type
+	numbersOfObjects[object_type]++;
 }
 
 /*

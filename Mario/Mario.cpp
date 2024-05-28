@@ -8,6 +8,7 @@
 #include "Portal.h"
 #include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
+#include "Object-Mushroom.h"
 
 #include "Collision.h"
 
@@ -56,9 +57,15 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 	else if (dynamic_cast<CPortal*>(e->obj))
 		OnCollisionWithPortal(e);
 	else if (dynamic_cast<CQuestionBlock*>(e->obj))
-	{
 		OnCollisionWithQuestionBlock(e);
-	}
+	else if (dynamic_cast<CMushroom*>(e->obj))
+		OnCollisionWithMushroom(e);
+}
+
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+{
+	SetLevel(MARIO_LEVEL_BIG);
+	e->obj->Delete();
 }
 
 void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
@@ -70,6 +77,10 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_COIN)
 		{
 			coin++;
+		}
+		else if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_LIFE)
+		{
+			QuestionBlock->SetHitX(x);
 		}
 	}
 }

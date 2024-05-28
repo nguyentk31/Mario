@@ -22,8 +22,9 @@ class CQuestionBlock : public CGameObject
 protected:
 	float originalY;
 	int type;
+	float hitX;
 	void generateCoin();
-	void generateLife();
+	void generateLife(int directionX);
 public:
 	CQuestionBlock(float x, float y, int type) : CGameObject(x, y) {
 		this->state = QUESTION_BLOCK_STATE_ALIVE;
@@ -37,6 +38,7 @@ public:
 	void OnNoCollision(DWORD dt);
 	void SetState(int state);
 	int GetType() { return this->type; }
+	void SetHitX(float x) { this->hitX = x; }
 };
 
 typedef CQuestionBlock* LPQUESTIONBLOCK;

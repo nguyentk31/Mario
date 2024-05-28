@@ -1,6 +1,8 @@
 #include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
+#include "Object-Mushroom.h"
 #include "PlayScene.h"
+#include "AssetIDs.h"
 
 void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -41,18 +43,18 @@ int CQuestionBlock::IsCollidable()
 }
 
 // Generate a coin or leaf or mushroom
+void CQuestionBlock::generateLife(int directionX)
+{
+	CMushroom* mushroom = new CMushroom(this->x, this->y, directionX, QUESTION_BLOCK_HEIGHT);
+	CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
+	current_scene->AddObject(OBJECT_TYPE_MUSHROOM ,mushroom);
+}
+
 void CQuestionBlock::generateCoin()
 {
 	CCoin* coin = new CCoin(this->x-QUESTION_BLOCK_WIDTH/2+COIN_SIZE/2, this->y-QUESTION_BLOCK_HEIGHT/2-COIN_SIZE/2, COIN_STATE_BOUNDING);
 	CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	current_scene->AddObject(coin);
-}
-
-void CQuestionBlock::generateLife()
-{
-	// CCoin* coin = new CCoin(this->x-QUESTION_BLOCK_WIDTH/2+COIN_SIZE/2, this->y-QUESTION_BLOCK_HEIGHT/2-COIN_SIZE/2, COIN_STATE_BOUNDING);
-	// CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	// current_scene->AddObject(coin);
+	current_scene->AddObject(OBJECT_TYPE_COIN, coin);
 }
 
 void CQuestionBlock::SetState(int state)
@@ -67,8 +69,10 @@ void CQuestionBlock::SetState(int state)
 			break;
 		case QUESTION_BLOCK_STATE_DEAD: 
 			this->vy = 0;
-			if (this->type == QUESTION_BLOCK_TYPE_LIFE)
-				generateLife();
+			if (this->type == QUESTION_BLOCK_TYPE_LIFE) {
+				int directionX = (hitX>x ? -1 : 1);
+				generateLife(directionX);
+			}
 			break;
 	}
 }

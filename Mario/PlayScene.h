@@ -23,6 +23,8 @@ protected:
 	LPGAMEOBJECT player;					
 
 	vector<LPGAMEOBJECT> objects;
+	// Numbers of each object type in the scene
+	vector<int> numbersOfObjects;
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -40,7 +42,7 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	// Add new object to the current scene
-	void AddObject(LPGAMEOBJECT obj);
+	void AddObject(int object_type, LPGAMEOBJECT obj);
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

@@ -93,7 +93,10 @@
     <ClInclude Include="Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Object-CoinBox.h">
+    <ClInclude Include="Object-QuestionBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Object-Mushroom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -164,7 +167,10 @@
     <ClCompile Include="Box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Object-CoinBox.cpp">
+    <ClCompile Include="Object-QuestionBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object-Mushroom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
