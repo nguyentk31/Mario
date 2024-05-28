@@ -25,6 +25,7 @@ protected:
 	vector<LPGAMEOBJECT> objects;
 	// Numbers of each object type in the scene
 	vector<int> numbersOfObjects;
+	vector<int> orderOfObjects;
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);

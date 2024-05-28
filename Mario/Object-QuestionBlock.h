@@ -37,6 +37,7 @@ public:
 	int IsCollidable();
 	void OnNoCollision(DWORD dt);
 	void SetState(int state);
+	int GetState() { return this->state; }
 	int GetType() { return this->type; }
 	void SetHitX(float x) { this->hitX = x; }
 };

@@ -1,20 +1,16 @@
 #include "Object-Mushroom.h"
-#include "debug.h"
 
 void CMushroom::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-
+	if (ay != 0)
+		vy += ay * dt;
+	
 	if ( this->vx == 0 && this->originalY - this->y >= this->upDistance )
 	{
-		ay = MUSHROOM_GRAVITY;
+		vy = ay = MUSHROOM_GRAVITY;
 		vx = MUSHROOM_SPEED_X*directionX;
-	} else if ( this-> vx == 0 ) {
-		vy = -MUSHROOM_SPEED_UP;
-		y += vy * dt;
-		return;
 	}
 
-	vy += ay * dt;
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 

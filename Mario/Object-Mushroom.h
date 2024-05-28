@@ -22,7 +22,8 @@ public:
 		this->upDistance = upDistance;
 		originalY = y;
 		vx = 0;
-		ay = -MUSHROOM_SPEED_UP;
+		vy = -MUSHROOM_SPEED_UP;
+		ay = 0;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();

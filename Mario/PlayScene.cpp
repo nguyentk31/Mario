@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include "AssetIDs.h"
-
+#include <algorithm>
 #include "PlayScene.h"
 #include "Utils.h"
 #include "Textures.h"
@@ -17,6 +17,16 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	player = NULL;
 	key_handler = new CSampleKeyHandler(this);
 	numbersOfObjects = vector<int>(50, 0);
+	orderOfObjects = {
+		OBJECT_TYPE_BACKGROUNDS,
+		OBJECT_TYPE_GROUND,
+		OBJECT_TYPE_BOX,
+		OBJECT_TYPE_MUSHROOM,
+		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_COIN,
+		OBJECT_TYPE_MARIO,
+	};
+
 }
 
 
@@ -272,15 +282,19 @@ void CPlayScene::Update(DWORD dt)
 {
 	// Create non-background object and collision handle needed list
 	vector<LPGAMEOBJECT> nonbgObjects;
+	vector<LPGAMEOBJECT> collidableObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (objects[i]->IsBackground())
 			continue;
 		if (objects[i]->IsCollidable())
-			nonbgObjects.push_back(objects[i]);
+			collidableObjects.push_back(objects[i]);
 		else
-			nonbgObjects.insert(nonbgObjects.begin(), objects[i]);
+			nonbgObjects.push_back(objects[i]);
 	}
+
+	// Concantenate collidable objects with non-collidable objects
+	nonbgObjects.insert(nonbgObjects.end(), collidableObjects.begin(), collidableObjects.end());
 
 	// last added first handled so that Mario is always updated first
 	// remove update object from nonbgObjects to optimize
@@ -295,6 +309,23 @@ void CPlayScene::Update(DWORD dt)
 		nonbgObjects.pop_back();
 		obj->Update(dt, &nonbgObjects);
 	}
+	
+
+	// Swap dead question block
+	auto question_blocks = find_if(objects.begin(), objects.end(), [](CGameObject* obj) {
+		return dynamic_cast<CQuestionBlock*>(obj) != nullptr;
+	});
+	sort(question_blocks, objects.end(), [](CGameObject* a, CGameObject* b) {
+		CQuestionBlock* qa = dynamic_cast<CQuestionBlock*>(a);
+		CQuestionBlock* qb = dynamic_cast<CQuestionBlock*>(b);
+		if (qa && qb) {
+			if (qa->GetState() == QUESTION_BLOCK_STATE_ALIVE && qb->GetState() != QUESTION_BLOCK_STATE_ALIVE)
+				return true;
+		}
+		return false;
+	});
+
+	
 
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
@@ -323,24 +354,13 @@ void CPlayScene::Render()
 // Add new object to current scene
 void CPlayScene::AddObject(int object_type, LPGAMEOBJECT obj)
 {
-	// Order of rendering objects
-	vector<int> order = {
-		OBJECT_TYPE_BACKGROUNDS,
-		OBJECT_TYPE_GROUND,
-		OBJECT_TYPE_BOX,
-		OBJECT_TYPE_QUESTION_BLOCK,
-		OBJECT_TYPE_COIN,
-		OBJECT_TYPE_MUSHROOM,
-		OBJECT_TYPE_MARIO,
-	};
-
 	// Find the position to insert the new object
 	int pos = 0;
-	for (int i = 0; i < order.size(); i++)
+	for (int i = 0; i < orderOfObjects.size(); i++)
 	{
-		if (order[i] == object_type)
+		pos += numbersOfObjects[orderOfObjects[i]];
+		if (orderOfObjects[i] == object_type)
 			break;
-		pos += numbersOfObjects[order[i]];
 
 	}
 
@@ -352,10 +372,6 @@ void CPlayScene::AddObject(int object_type, LPGAMEOBJECT obj)
 	else
 	{
 		objects.push_back(obj);
-	}
-
-	if (object_type == OBJECT_TYPE_MUSHROOM) {
-		DebugOut(L"Add mushroom at %d\n", pos);
 	}
 
 	// Increase the number of objects of this type
