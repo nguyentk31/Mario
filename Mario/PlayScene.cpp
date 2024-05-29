@@ -19,12 +19,12 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	numbersOfObjects = vector<int>(50, 0);
 	orderOfObjects = {
 		OBJECT_TYPE_BACKGROUNDS,
-		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
 		OBJECT_TYPE_GOOMBA,
-		OBJECT_TYPE_QUESTION_BLOCK,
 		OBJECT_TYPE_COIN,
+		OBJECT_TYPE_BRICK,
+		OBJECT_TYPE_QUESTION_BLOCK,
 		OBJECT_TYPE_MARIO,
 	};
 
@@ -287,32 +287,28 @@ void CPlayScene::Update(DWORD dt)
 {
 	// Create non-background object and collision handle needed list
 	vector<LPGAMEOBJECT> nonbgObjects;
-	vector<LPGAMEOBJECT> collidableObjects;
 	for (size_t i = 0; i < objects.size(); i++)
 	{
 		if (objects[i]->IsBackground())
 			continue;
-		if (objects[i]->IsCollidable())
-			collidableObjects.push_back(objects[i]);
 		else
-			nonbgObjects.push_back(objects[i]);
+			// Reverse the order of non-background objects to update them in the correct order
+			nonbgObjects.insert(nonbgObjects.begin(), objects[i]);
+
 	}
 
-	// Concantenate collidable objects with non-collidable objects
-	nonbgObjects.insert(nonbgObjects.end(), collidableObjects.begin(), collidableObjects.end());
-
-	// last added first handled so that Mario is always updated first
-	// remove update object from nonbgObjects to optimize
-	while (!nonbgObjects.empty())
+	// Update collision object with other objects
+	size_t numNonBgObjects = nonbgObjects.size();
+	for ( int i = 0; i < numNonBgObjects; i++)
 	{
-		LPGAMEOBJECT obj = nonbgObjects.back();
-
-		if (!obj->IsCollidable()) {
-			break;
-		}
-
-		nonbgObjects.pop_back();
+		if (!nonbgObjects[i]->IsCollidable())
+			continue;
+		
+		LPGAMEOBJECT obj = nonbgObjects[i];
+		nonbgObjects.erase(nonbgObjects.begin() + i);
 		obj->Update(dt, &nonbgObjects);
+		i--;
+		numNonBgObjects--;
 	}
 	
 
@@ -324,7 +320,7 @@ void CPlayScene::Update(DWORD dt)
 		CQuestionBlock* qa = dynamic_cast<CQuestionBlock*>(a);
 		CQuestionBlock* qb = dynamic_cast<CQuestionBlock*>(b);
 		if (qa && qb) {
-			if (qa->GetState() == QUESTION_BLOCK_STATE_ALIVE && qb->GetState() != QUESTION_BLOCK_STATE_ALIVE)
+			if (qa->GetState() != QUESTION_BLOCK_STATE_ALIVE && qb->GetState() == QUESTION_BLOCK_STATE_ALIVE)
 				return true;
 		}
 		return false;
