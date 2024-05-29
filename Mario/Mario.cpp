@@ -5,10 +5,12 @@
 #include "Game.h"
 
 #include "Portal.h"
-#include "Object-Goomba.h"
-#include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
+#include "Object-Fireball.h"
+#include "Object-Goomba.h"
 #include "Object-Mushroom.h"
+#include "Object-QuestionBlock.h"
+#include "Object-VenusFireTrap.h"
 
 #include "Collision.h"
 
@@ -44,12 +46,11 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		vy = 0;
 		if (e->ny < 0) isOnPlatform = true;
 	}
-	else 
-	if (e->nx != 0 && e->obj->IsBlocking())
+	else if (e->nx != 0 && e->obj->IsBlocking())
 	{
 		vx = 0;
 	}
-
+	
 	if (dynamic_cast<CGoomba*>(e->obj))
 		OnCollisionWithGoomba(e);
 	else if (dynamic_cast<CCoin*>(e->obj))
@@ -60,11 +61,13 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e)
 		OnCollisionWithQuestionBlock(e);
 	else if (dynamic_cast<CMushroom*>(e->obj))
 		OnCollisionWithMushroom(e);
+	else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj))
+		Hit();
 }
 
 void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
-	SetLevel(MARIO_LEVEL_BIG);
+	LevelUp();
 	e->obj->Delete();
 }
 
@@ -100,21 +103,9 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 	}
 	else // hit by Goomba
 	{
-		if (untouchable == 0)
+		if (goomba->GetState() != GOOMBA_STATE_DIE)
 		{
-			if (goomba->GetState() != GOOMBA_STATE_DIE)
-			{
-				if (level > MARIO_LEVEL_SMALL)
-				{
-					level = MARIO_LEVEL_SMALL;
-					StartUntouchable();
-				}
-				else
-				{
-					DebugOut(L">>> Mario DIE >>> \n");
-					SetState(MARIO_STATE_DIE);
-				}
-			}
+			Hit();
 		}
 	}
 }
@@ -129,6 +120,44 @@ void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());
+}
+
+void CMario::Hit()
+{
+	if (untouchable == 0)
+	{
+		LevelDown();
+	}
+}
+
+void CMario::LevelUp()
+{
+	switch (level)
+	{
+	case MARIO_LEVEL_SMALL:
+		SetLevel(MARIO_LEVEL_BIG);
+		break;
+	// case MARIO_LEVEL_BIG:
+	// 	SetLevel(MARIO_LEVEL_RACOON);
+	// 	break;
+	}
+}
+
+void CMario::LevelDown()
+{
+	switch (level)
+	{
+	// case MARIO_LEVEL_RACOON:
+	// 	SetLevel(MARIO_LEVEL_BIG);
+	// 	break;
+	case MARIO_LEVEL_BIG:
+		SetLevel(MARIO_LEVEL_SMALL);
+		break;
+	case MARIO_LEVEL_SMALL:
+		SetState(MARIO_STATE_DIE);
+		return;
+	}
+	StartUntouchable();
 }
 
 //
@@ -267,8 +296,6 @@ void CMario::Render()
 		aniId = GetAniIdSmall();
 
 	animations->Get(aniId)->Render(x, y);
-
-	//RenderBoundingBox();
 	
 	DebugOutTitle(L"Coins: %d", coin);
 }
@@ -384,9 +411,15 @@ void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom
 void CMario::SetLevel(int l)
 {
 	// Adjust position to avoid falling off platform
-	if (this->level == MARIO_LEVEL_SMALL)
+	switch (l)
 	{
-		y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+	case MARIO_LEVEL_BIG:
+		if (level == MARIO_LEVEL_SMALL)
+			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		break;
+	case MARIO_LEVEL_SMALL:
+		y += (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;
+		break;
 	}
 	level = l;
 }

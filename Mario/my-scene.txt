@@ -154,7 +154,7 @@ Object-VenusFireTrap.txt
 4	1080	328
 
 # Goomba
-#3	232	400
+3	232	400
 3	500	400
 
 # Venus Fire Trap

@@ -1,4 +1,5 @@
 #include "Object-Goomba.h"
+#include "Mario.h"
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
@@ -24,8 +25,7 @@ void CGoomba::OnNoCollision(DWORD dt)
 
 void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
 {
-	if (!e->obj->IsBlocking()) return; 
-	if (dynamic_cast<CGoomba*>(e->obj)) return; 
+	if (!e->obj->IsBlocking()) return; // Ignore if e->obj is not blocking
 
 	if (e->ny != 0 )
 	{

@@ -59,7 +59,6 @@ void CPlayScene::_ParseSection_SPRITES(string line)
 	LPTEXTURE tex = CTextures::GetInstance()->Get(texID);
 	if (tex == NULL)
 	{
-		DebugOut(L"[ERROR] Texture ID %d not found!\n", texID);
 		return; 
 	}
 
@@ -312,10 +311,10 @@ void CPlayScene::Update(DWORD dt)
 			continue;
 		
 		LPGAMEOBJECT obj = nonbgObjects[i];
-		nonbgObjects.erase(nonbgObjects.begin() + i);
+		// nonbgObjects.erase(nonbgObjects.begin() + i);
 		obj->Update(dt, &nonbgObjects);
-		i--;
-		numNonBgObjects--;
+		// i--;
+		// numNonBgObjects--;
 	}
 	
 

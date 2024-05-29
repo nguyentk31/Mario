@@ -1,4 +1,6 @@
 #include "Object-Fireball.h"
+#include "Mario.h"
+
 
 void CFireball::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
@@ -12,6 +14,17 @@ void CFireball::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	x += vx * dt;
 	y += vy * dt;
+
+	CCollision::GetInstance()->Process(this, dt, coObjects);
+}
+
+void CFireball::OnCollisionWith(LPCOLLISIONEVENT e)
+{
+	if (dynamic_cast<CMario*>(e->obj))
+	{
+		CMario* mario = dynamic_cast<CMario*>(e->obj);
+		mario->Hit();
+	}
 }
 
 void CFireball::Render()

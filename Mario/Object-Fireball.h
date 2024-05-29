@@ -1,8 +1,8 @@
 #pragma once
 #include "GameObject.h"
 
-#define FIREBALL_WIDTH 8
-#define FIREBALL_HEIGHT 8
+#define FIREBALL_WIDTH 6
+#define FIREBALL_HEIGHT 6
 
 #define ID_ANI_FIREBALL 110000
 
@@ -18,6 +18,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void Render();
 	void GetBoundingBox(float& l, float& t, float& r, float& b);
+	void OnCollisionWith(LPCOLLISIONEVENT e);
 
 	int IsCollidable() { return 1; };
 	int IsBlocking() { return 0; }
