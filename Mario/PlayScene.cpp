@@ -19,7 +19,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 	numbersOfObjects = vector<int>(50, 0);
 	orderOfObjects = {
 		OBJECT_TYPE_BACKGROUNDS,
-		OBJECT_TYPE_GROUND,
+		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
 		OBJECT_TYPE_QUESTION_BLOCK,
@@ -127,10 +127,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
-	case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
-	case OBJECT_TYPE_BRICK: obj = new CBrick(x,y); break;
-	case OBJECT_TYPE_COIN: obj = new CCoin(x, y); break;
-
+	// case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
+	case OBJECT_TYPE_COIN: 
+	{
+		obj = new CCoin(x, y);
+		break;
+	}
 	case OBJECT_TYPE_PLATFORM:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -149,18 +151,17 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 
-	case OBJECT_TYPE_GROUND:
+	case OBJECT_TYPE_BRICK:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
 		float cell_height = (float)atof(tokens[4].c_str());
 		int lengthX = atoi(tokens[5].c_str());
 		int lengthY = atoi(tokens[6].c_str());
-		int spriteIdMap[2][3];
-		for (int i = 0; i < 2; i++)
+		int spriteIdMap[3][3];
+		for (int i = 0; i < 3; i++)
 			for (int j = 0; j < 3; j++)
 				spriteIdMap[i][j] = atoi(tokens[7 + i * 3 + j].c_str());
-		obj = new CGround(x, y, cell_width, cell_height, lengthX, lengthY, spriteIdMap);
-		
+		obj = new CBrick(x, y, cell_width, cell_height, lengthX, lengthY, spriteIdMap);
 		break;
 	}
 	case OBJECT_TYPE_BACKGROUNDS:
@@ -363,6 +364,7 @@ void CPlayScene::AddObject(int object_type, LPGAMEOBJECT obj)
 			break;
 
 	}
+
 
 	// Insert the new object
 	if (pos < objects.size())
