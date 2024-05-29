@@ -25,7 +25,6 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 
 void CQuestionBlock::Render()
 {
-	// DebugOut(L"REDER TYPE: %d\n", type);
 	CAnimations* animations = CAnimations::GetInstance();
 	if (this->state == QUESTION_BLOCK_STATE_ALIVE) {
 		animations->Get(ID_ANI_QUESTION_BLOCK_ALIVE)->Render(x, y);

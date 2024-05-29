@@ -21,10 +21,12 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_BACKGROUNDS,
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
+		OBJECT_TYPE_VENUS_FIRE_TRAP,
 		OBJECT_TYPE_GOOMBA,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_FIREBALL,
 		OBJECT_TYPE_MARIO,
 	};
 
@@ -192,14 +194,19 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CQuestionBlock(x, y, type);
 		break;
 	}
+	case OBJECT_TYPE_VENUS_FIRE_TRAP: {
+		obj = new CVenusFireTrap(x, y);
+		break;
+	
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
 		float b = (float)atof(tokens[4].c_str());
 		int scene_id = atoi(tokens[5].c_str());
 		obj = new CPortal(x, y, r, b, scene_id);
+		break;
 	}
-	break;
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);

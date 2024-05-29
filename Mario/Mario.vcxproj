@@ -141,6 +141,7 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Object-Fireball.h" />
     <ClInclude Include="Object-Goomba.h" />
     <ClInclude Include="KeyEventHandler.h" />
     <ClInclude Include="Mario.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Object-Coin.h" />
     <ClInclude Include="Object-Mushroom.h" />
     <ClInclude Include="Object-QuestionBlock.h" />
+    <ClInclude Include="Object-VenusFireTrap.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
@@ -168,6 +170,7 @@
     <ClCompile Include="debug.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Object-Fireball.cpp" />
     <ClCompile Include="Object-Goomba.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
@@ -175,6 +178,7 @@
     <ClCompile Include="Object-Coin.cpp" />
     <ClCompile Include="Object-Mushroom.cpp" />
     <ClCompile Include="Object-QuestionBlock.cpp" />
+    <ClCompile Include="Object-VenusFireTrap.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />

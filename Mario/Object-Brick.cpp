@@ -22,8 +22,8 @@ void CBrick::Render()
 
 void CBrick::GetBoundingBox(float& l, float& t, float& r, float& b)
 {
-	l = x - this->cellWidth / 2;
+	l = x - this->cellWidth / 2 + 2;
 	t = y - this->cellHeight / 2;
-	r = l + this->cellWidth * this->lengthX;
+	r = l + this->cellWidth * this->lengthX - 2;
 	b = t + this->cellHeight * this->lengthY;
 }

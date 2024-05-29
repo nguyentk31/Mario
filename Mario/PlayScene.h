@@ -12,6 +12,7 @@
 #include "Object-Brick.h"
 #include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
+#include "Object-VenusFireTrap.h"
 //#include "Koopas.h"
 
 

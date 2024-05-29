@@ -7,12 +7,12 @@ void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &botto
 	if (state == GOOMBA_STATE_DIE)
 	{
 		top = y - GOOMBA_BBOX_HEIGHT_DIE/2;
-		bottom = top + GOOMBA_BBOX_HEIGHT_DIE - 1;
+		bottom = top + GOOMBA_BBOX_HEIGHT_DIE - 2;
 	}
 	else
 	{ 
 		top = y - GOOMBA_BBOX_HEIGHT/2;
-		bottom = top + GOOMBA_BBOX_HEIGHT - 1;
+		bottom = top + GOOMBA_BBOX_HEIGHT - 2;
 	}
 }
 

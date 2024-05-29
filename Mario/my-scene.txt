@@ -3,11 +3,13 @@
 mario.txt
 backgrounds.txt
 box.txt
+Object-Coin.txt
+Object-Fireball.txt
 Object-Goomba.txt
 Object-Brick.txt
-Object-QuestionBlock.txt
-Object-Coin.txt
 Object-Mushroom.txt
+Object-QuestionBlock.txt
+Object-VenusFireTrap.txt
 
 #
 [OBJECTS]
@@ -139,7 +141,7 @@ Object-Mushroom.txt
 
 8	520	312	16	16	2	5	4000	1	0
 8	472	344	16	16	2	3	1000	1	0
-8	408	376	16	16	4	1	3000	1	0
+8	408	376	16	16	3	1	3000	1	0
 8	520	392	16	16	4	0	3000	1	0
 
 # Brick
@@ -152,8 +154,11 @@ Object-Mushroom.txt
 4	1080	328
 
 # Goomba
-3	232	400
+#3	232	400
 3	500	400
+
+# Venus Fire Trap
+6	368	384
 
 # QuestionBlock
 9	184	360	1
