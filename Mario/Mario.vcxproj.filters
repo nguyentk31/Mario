@@ -30,9 +30,6 @@
     <ClInclude Include="AssetIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Brick.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Object-Coin.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,7 +45,7 @@
     <ClInclude Include="GameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Goomba.h">
+    <ClInclude Include="Object-Goomba.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="KeyEventHandler.h">
@@ -110,9 +107,6 @@
     <ClCompile Include="Animations.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Brick.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Object-Coin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -128,7 +122,7 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Goomba.cpp">
+    <ClCompile Include="Object-Goomba.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">

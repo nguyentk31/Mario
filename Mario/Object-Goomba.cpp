@@ -1,28 +1,18 @@
-#include "Goomba.h"
-
-CGoomba::CGoomba(float x, float y):CGameObject(x, y)
-{
-	this->ax = 0;
-	this->ay = GOOMBA_GRAVITY;
-	die_start = -1;
-	SetState(GOOMBA_STATE_WALKING);
-}
+#include "Object-Goomba.h"
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
+	left = x - GOOMBA_BBOX_WIDTH/2;
+	right = left + GOOMBA_BBOX_WIDTH;
 	if (state == GOOMBA_STATE_DIE)
 	{
-		left = x - GOOMBA_BBOX_WIDTH/2;
 		top = y - GOOMBA_BBOX_HEIGHT_DIE/2;
-		right = left + GOOMBA_BBOX_WIDTH;
-		bottom = top + GOOMBA_BBOX_HEIGHT_DIE;
+		bottom = top + GOOMBA_BBOX_HEIGHT_DIE - 1;
 	}
 	else
 	{ 
-		left = x - GOOMBA_BBOX_WIDTH/2;
 		top = y - GOOMBA_BBOX_HEIGHT/2;
-		right = left + GOOMBA_BBOX_WIDTH;
-		bottom = top + GOOMBA_BBOX_HEIGHT;
+		bottom = top + GOOMBA_BBOX_HEIGHT - 1;
 	}
 }
 
@@ -58,7 +48,6 @@ void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		return;
 	}
 
-	CGameObject::Update(dt, coObjects);
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
@@ -72,7 +61,7 @@ void CGoomba::Render()
 	}
 
 	CAnimations::GetInstance()->Get(aniId)->Render(x,y);
-	RenderBoundingBox();
+	// RenderBoundingBox();
 }
 
 void CGoomba::SetState(int state)

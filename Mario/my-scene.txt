@@ -1,10 +1,9 @@
 # list of object assets to load in this scene
 [ASSETS]
 mario.txt
-cloud.txt
 backgrounds.txt
-coin.txt
 box.txt
+Object-Goomba.txt
 Object-Brick.txt
 Object-QuestionBlock.txt
 Object-Coin.txt
@@ -151,6 +150,10 @@ Object-Mushroom.txt
 
 # Coin
 4	1080	328
+
+# Goomba
+3	232	400
+3	500	400
 
 # QuestionBlock
 9	184	360	1

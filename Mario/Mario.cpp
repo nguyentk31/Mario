@@ -4,8 +4,8 @@
 #include "Mario.h"
 #include "Game.h"
 
-#include "Goomba.h"
 #include "Portal.h"
+#include "Object-Goomba.h"
 #include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
 #include "Object-Mushroom.h"

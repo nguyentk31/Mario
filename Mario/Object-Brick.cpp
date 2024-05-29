@@ -1,5 +1,4 @@
 #include "Object-Brick.h"
-#include "debug.h"
 
 void CBrick::Render()
 {
@@ -7,7 +6,6 @@ void CBrick::Render()
 	float xx = x;
 	float yy = y;
 	CSprites* s = CSprites::GetInstance();
-	DebugOut(L"Brick: %f %f %d %d\n", x, y, lengthX, lengthY);
 	
 	for (int i = 0; i < lengthY; i++) {
 		for (int j = 0; j < lengthX; j++) {

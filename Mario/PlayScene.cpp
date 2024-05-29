@@ -22,6 +22,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
+		OBJECT_TYPE_GOOMBA,
 		OBJECT_TYPE_QUESTION_BLOCK,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_MARIO,
@@ -127,7 +128,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
-	// case OBJECT_TYPE_GOOMBA: obj = new CGoomba(x,y); break;
+	case OBJECT_TYPE_GOOMBA: {
+		obj = new CGoomba(x,y); break;
+		break;
+	}
 	case OBJECT_TYPE_COIN: 
 	{
 		obj = new CCoin(x, y);
