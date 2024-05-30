@@ -1,5 +1,4 @@
 #include "Object-Goomba.h"
-#include "Mario.h"
 
 void CGoomba::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {

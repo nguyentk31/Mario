@@ -147,6 +147,7 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Object-Brick.h" />
     <ClInclude Include="Object-Coin.h" />
+    <ClInclude Include="Object-KoopaTroopa.h" />
     <ClInclude Include="Object-Mushroom.h" />
     <ClInclude Include="Object-QuestionBlock.h" />
     <ClInclude Include="Object-VenusFireTrap.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Object-Brick.cpp" />
     <ClCompile Include="Object-Coin.cpp" />
+    <ClCompile Include="Object-KoopaTroopa.cpp" />
     <ClCompile Include="Object-Mushroom.cpp" />
     <ClCompile Include="Object-QuestionBlock.cpp" />
     <ClCompile Include="Object-VenusFireTrap.cpp" />

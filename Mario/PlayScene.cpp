@@ -23,6 +23,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_MUSHROOM,
 		OBJECT_TYPE_VENUS_FIRE_TRAP,
 		OBJECT_TYPE_GOOMBA,
+		OBJECT_TYPE_KOOPA_TROOPA,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_QUESTION_BLOCK,
@@ -197,6 +198,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CVenusFireTrap(x, y);
 		break;
 	
+	}
+	case OBJECT_TYPE_KOOPA_TROOPA: {
+		obj = new CKoopaTroopa(x, y);
+		break;
 	}
 	case OBJECT_TYPE_PORTAL:
 	{

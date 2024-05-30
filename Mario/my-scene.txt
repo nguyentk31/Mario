@@ -6,6 +6,7 @@ box.txt
 Object-Coin.txt
 Object-Fireball.txt
 Object-Goomba.txt
+Object-KoopaTroopa.txt
 Object-Brick.txt
 Object-Mushroom.txt
 Object-QuestionBlock.txt
@@ -157,6 +158,9 @@ Object-VenusFireTrap.txt
 3	232	400
 3	500	400
 
+# KoopaTroopa
+12	584	370
+
 # Venus Fire Trap
 6	368	384
 
@@ -174,4 +178,4 @@ Object-VenusFireTrap.txt
 9	712	360	1
 
 # MARIO
-1	150	320
+1	481	300
