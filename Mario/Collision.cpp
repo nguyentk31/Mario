@@ -222,14 +222,7 @@ void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* co
 			return;
 		}
 
-		if (firstCol->obj->IsBlocking())
-		{
-			CollisionWithBlockingObj(objSrc, dt, firstCol);
-		}
-		else
-		{
-			CollisionWithNonBlockingObj(objSrc, dt, firstCol);
-		}
+		CollisionWithObject(objSrc, dt, firstCol);
 
 		processedFlags[colEventIndex] = true;
 	}
@@ -238,8 +231,13 @@ void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* co
 
 }
 
-void CCollision::CollisionWithBlockingObj(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent)
+void CCollision::CollisionWithObject(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent)
 {
+	if (!colEvent->obj->IsBlocking()) {
+		objSrc->OnCollisionWith(colEvent, dt);
+		return;
+	}
+
 	float x, y, vx, vy, dx, dy;
 	objSrc->GetPosition(x, y);
 	objSrc->GetSpeed(vx, vy);
@@ -256,10 +254,5 @@ void CCollision::CollisionWithBlockingObj(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLI
 	}
 
 	objSrc->SetPosition(x, y);
-	objSrc->OnCollisionWith(colEvent);
-}
-
-void CCollision::CollisionWithNonBlockingObj(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent)
-{
-	objSrc->OnCollisionWith(colEvent);
+	objSrc->OnCollisionWith(colEvent, dt);
 }

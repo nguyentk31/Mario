@@ -17,7 +17,7 @@
 
 #define MARIO_GRAVITY			0.002f
 
-#define MARIO_JUMP_DEFLECT_SPEED  0.4f
+#define MARIO_JUMP_DEFLECT_SPEED  0.3f
 
 #define MARIO_STATE_DIE				-10
 #define MARIO_STATE_IDLE			0
@@ -33,6 +33,7 @@
 #define MARIO_STATE_SIT				600
 #define MARIO_STATE_SIT_RELEASE		601
 
+#define MARIO_STATE_KICK			700
 
 #pragma region ANIMATION_ID
 
@@ -57,6 +58,9 @@
 #define ID_ANI_MARIO_BRACE_RIGHT 1000
 #define ID_ANI_MARIO_BRACE_LEFT 1001
 
+#define ID_ANI_MARIO_KICK_RIGHT 1100
+#define ID_ANI_MARIO_KICK_LEFT 1101
+
 #define ID_ANI_MARIO_DIE 999
 
 // SMALL MARIO
@@ -77,6 +81,9 @@
 
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_RIGHT 1600
 #define ID_ANI_MARIO_SMALL_JUMP_RUN_LEFT 1601
+
+#define ID_ANI_MARIO_SMALL_KICK_RIGHT 1700
+#define ID_ANI_MARIO_SMALL_KICK_LEFT 1701
 
 #pragma endregion
 
@@ -101,6 +108,7 @@
 
 
 #define MARIO_UNTOUCHABLE_TIME 2500
+#define MARIO_KICKING_TIME 500
 
 class CMario : public CGameObject
 {
@@ -113,13 +121,14 @@ class CMario : public CGameObject
 	int untouchable; 
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
-	int coin; 
+	int coin;
 
-	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
-	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
-	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
-	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e);
-	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithGoomba(LPCOLLISIONEVENT e, DWORD dt);
+	void OnCollisionWithCoin(LPCOLLISIONEVENT e, DWORD dt);
+	void OnCollisionWithPortal(LPCOLLISIONEVENT e, DWORD dt);
+	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e, DWORD dt);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e, DWORD dt);
+	void OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -153,7 +162,7 @@ public:
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
 
 	void OnNoCollision(DWORD dt);
-	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWith(LPCOLLISIONEVENT e , DWORD dt);
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }

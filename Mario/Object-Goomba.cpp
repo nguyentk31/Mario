@@ -19,7 +19,7 @@ void CGoomba::OnNoCollision(DWORD dt)
 	y += vy * dt;
 };
 
-void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e)
+void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 {
 	if (!e->obj->IsBlocking()) return; // Ignore if e->obj is not blocking
 

@@ -73,24 +73,9 @@ public:
 		vector<bool>& processedFlags, 
 		LPCOLLISIONEVENT& firstColEvent,
 		int& colEventIndex);
-	// void Scan(
-	// 	LPGAMEOBJECT objSrc, 
-	// 	DWORD dt, 
-	// 	vector<LPGAMEOBJECT>* objDests, 
-	// 	vector<LPCOLLISIONEVENT>& coEvents);
-
-	// void Filter(
-	// 	LPGAMEOBJECT objSrc,
-	// 	vector<LPCOLLISIONEVENT>& coEvents,
-	// 	LPCOLLISIONEVENT &colX,
-	// 	LPCOLLISIONEVENT &colY, 
-	// 	int filterBlock,		
-	// 	int filterX,
-	// 	int filterY);
 
 	void Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void CollisionWithBlockingObj(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent);
-	void CollisionWithNonBlockingObj(LPGAMEOBJECT objSr, DWORD dt, LPCOLLISIONEVENT colEvent);
+	void CollisionWithObject(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent);
 
 	static CCollision* GetInstance();
 };

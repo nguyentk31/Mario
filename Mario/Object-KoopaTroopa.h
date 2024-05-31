@@ -3,26 +3,30 @@
 
 #define KOOPA_TROOPA_GRAVITY 0.002f
 #define KOOPA_TROOPA_WALKING_SPEED 0.03f
+#define KOOPA_TROOPA_ROLLING_SPEED 0.3f
 
 #define KOOPA_TROOPA_FORCAST_PIXEL 8
 
 #define KOOPA_TROOPA_BBOX_WIDTH 16
 #define KOOPA_TROOPA_BBOX_HEIGHT 27
+#define KOOPA_TROOPA_SHELL_BBOX_HEIGHT 16
 
 #define KOOPA_TROOPA_STATE_WALKING 1
 #define KOOPA_TROOPA_STATE_SHELL 2
 #define KOOPA_TROOPA_STATE_ROLLING 3
 #define KOOPA_TROOPA_STATE_REVIVE 4
 
+#define KOOPA_TROOPA_STATE_SHELL_TIMEOUT 5000
+#define KOOPA_TROOPA_STATE_REVIVE_TIMEOUT 2000
+
 class CKoopaTroopa : public CGameObject
 {
 protected:
-	float ay; 
+	float ay;
+	ULONGLONG shell_start, revive_start;
 public: 	
 	CKoopaTroopa(float x, float y): CGameObject(OBJECT_TYPE_KOOPA_TROOPA, x, y) {
-		this->ay = KOOPA_TROOPA_GRAVITY;
-		this->vx = -KOOPA_TROOPA_WALKING_SPEED;
-		this->vy = 0;
+		ay = KOOPA_TROOPA_GRAVITY;
 		SetState(KOOPA_TROOPA_STATE_WALKING);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
@@ -32,6 +36,6 @@ public:
 	int IsCollidable() { return 1; };
 	int IsBlocking() { return 0; }
 	void OnNoCollision(DWORD dt);
-	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt);
 	void SetState(int state);
 };

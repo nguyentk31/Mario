@@ -36,7 +36,7 @@ public:
 	void GetBoundingBox(float& left, float& top, float& right, float& bottom);
 	int IsCollidable();
 	void OnNoCollision(DWORD dt);
-	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt);
 	void SetState(int state);
 	int GetType() { return this->QBType; }
 	void SetHitX(float x) { this->hitX = x; }

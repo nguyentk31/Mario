@@ -154,14 +154,14 @@ Sprites_Animations/VenusFireTrap.txt
 4	1080	328
 
 # Goomba
-#3	232	400
-#3	500	400
+3	232	400
+3	500	400
 
 # KoopaTroopa
 12	584	370
 
 # Venus Fire Trap
-6	368	384
+#6	368	384
 
 # QuestionBlock
 9	184	360	1
@@ -177,4 +177,4 @@ Sprites_Animations/VenusFireTrap.txt
 9	712	360	1
 
 # MARIO
-1	200	300
+1	500	300

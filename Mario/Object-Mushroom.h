@@ -28,7 +28,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	int IsCollidable() { return 1; };
-	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt);
 	void OnNoCollision(DWORD dt);
 	int IsBlocking() { return 0; }
 	void SetState(int state);

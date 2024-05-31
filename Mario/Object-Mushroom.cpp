@@ -20,7 +20,7 @@ void CMushroom::OnNoCollision(DWORD dt)
 	y += vy * dt;
 };
 
-void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e)
+void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 {
 	if (!e->obj->IsBlocking()) return;
 	if (e->ny != 0 )

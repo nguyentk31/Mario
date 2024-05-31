@@ -30,6 +30,6 @@ public:
 	int IsCollidable() { return 1; };
 	int IsBlocking() { return 0; }
 	void OnNoCollision(DWORD dt);
-	void OnCollisionWith(LPCOLLISIONEVENT e);
+	void OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt);
 	void SetState(int state);
 };

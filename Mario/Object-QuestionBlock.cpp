@@ -1,6 +1,7 @@
 #include "Object-QuestionBlock.h"
 #include "Object-Coin.h"
 #include "Object-Mushroom.h"
+#include "Object-Brick.h"
 #include "PlayScene.h"
 #include "debug.h"
 
@@ -11,7 +12,7 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		coObjects->push_back(item);
 	}
 
-	if (vy < 0 || y < originalY) {
+	if (vy < 0 || y < originalY ){
 		vy += ay * dt;
 		CCollision::GetInstance()->Process(this, dt, coObjects);
 	} else
@@ -33,17 +34,17 @@ void CQuestionBlock::OnNoCollision(DWORD dt)
 	y += vy * dt;
 }
 
-void CQuestionBlock::OnCollisionWith(LPCOLLISIONEVENT e) {
+void CQuestionBlock::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt) {
 	if (dynamic_cast<CMushroom*>(e->obj)) {
 		if (e->ny > 0) {
 			e->obj->SetState(MUSHROOM_STATE_BOUNCING);
 		}
-	}
-	if (dynamic_cast<CCoin*>(e->obj)) {
+	} else if (dynamic_cast<CCoin*>(e->obj)) {
 		if (e->ny > 0) {
 			e->obj->SetState(COIN_STATE_BOUNCING);
 		}
-	}
+	} else if (dynamic_cast<CBrick*>(e->obj))
+		SetState(QUESTION_BLOCK_STATE_DEAD);
 }
 
 int CQuestionBlock::IsCollidable()
@@ -85,6 +86,7 @@ void CQuestionBlock::SetState(int state)
 				generateLvItem();
 			CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 			current_scene->QBLockStateChanged();
+			DebugOut(L"[INFO] Question block state changed\n");
 			break;
 	}
 }
