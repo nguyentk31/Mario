@@ -1,6 +1,7 @@
 #include "Object-KoopaTroopa.h"
 #include "Object-QuestionBlock.h"
 #include "Object-Goomba.h"
+#include "Mario.h"
 #include "Playscene.h"
 
 void CKoopaTroopa::GetBoundingBox(float &left, float &top, float &right, float &bottom)
@@ -20,6 +21,7 @@ void CKoopaTroopa::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
 	y += vy * dt;
+	int x = 0;
 };
 
 void CKoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
@@ -43,33 +45,54 @@ void CKoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 				e->obj->SetState(GOOMBA_STATE_DIE);
 		}
 	}
-
-
-
 }
 
 void CKoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	vy += ay * dt;
 
 	if (state == KOOPA_TROOPA_STATE_SHELL && GetTickCount64() - shell_start > KOOPA_TROOPA_STATE_SHELL_TIMEOUT)
 		SetState(KOOPA_TROOPA_STATE_REVIVE);
 	else if (state == KOOPA_TROOPA_STATE_REVIVE && GetTickCount64() - revive_start > KOOPA_TROOPA_STATE_REVIVE_TIMEOUT)
 		SetState(KOOPA_TROOPA_STATE_WALKING);
-	else if (state == KOOPA_TROOPA_STATE_WALKING) {
-		DWORD forcast_period = static_cast<DWORD>(KOOPA_TROOPA_FORCAST_PIXEL / KOOPA_TROOPA_WALKING_SPEED);
-		CKoopaTroopa *futureKoopaTroopa = new CKoopaTroopa(x+vx*forcast_period, y);
-		futureKoopaTroopa->SetSpeed(vx, vy);
-		CCollision::GetInstance()->Process(futureKoopaTroopa, dt, coObjects);
-		float futureSpeedX, futureSpeedY;
-		futureKoopaTroopa->GetSpeed(futureSpeedX, futureSpeedY);
-		if (futureSpeedY > 0) {
-			vx = -vx;
+	else if (!(state == KOOPA_TROOPA_STATE_SHELL || state == KOOPA_TROOPA_STATE_REVIVE)) {
+		vy += ay * dt;
+		if (state == KOOPA_TROOPA_STATE_WALKING) {
+			// Check whether present Koopa Troopa will falling or not
+			CKoopaTroopa *presentKoopaTroopa = new CKoopaTroopa(x, y);
+			presentKoopaTroopa->SetSpeed(vx, vy);
+			CCollision::GetInstance()->Process(presentKoopaTroopa, dt, coObjects);
+			float presentSpeedX, presentSpeedY;
+			presentKoopaTroopa->GetSpeed(presentSpeedX, presentSpeedY);
+			// if present Koopa Troopa is not falling then check whether future Koopa Troopa will falling or not
+			if (presentSpeedY == 0)
+			{
+				DWORD forcast_period = static_cast<DWORD>(KOOPA_TROOPA_FORCAST_PIXEL / KOOPA_TROOPA_WALKING_SPEED);
+				CKoopaTroopa *futureKoopaTroopa = new CKoopaTroopa(x+vx*forcast_period, y);
+				futureKoopaTroopa->SetSpeed(vx, vy);
+				CCollision::GetInstance()->Process(futureKoopaTroopa, dt, coObjects);
+				float futureSpeedX, futureSpeedY;
+				futureKoopaTroopa->GetSpeed(futureSpeedX, futureSpeedY);
+				// if future Koopa Troopa is falling then turn back
+				if (futureSpeedY > 0) {
+					vx = -vx;
+					
+					delete presentKoopaTroopa;
+					delete futureKoopaTroopa;
+					return;
+				}
+				delete futureKoopaTroopa;
+			}
+			// If present Koopa Troopa is falling then let it fall
+			// Or if future Koopa Troopa is not falling then let it walk
+			presentKoopaTroopa->GetPosition(this->x, this->y);
+			presentKoopaTroopa->GetSpeed(this->vx, this->vy);
+			
+			delete presentKoopaTroopa;
+			int i = 0;
 			return;
 		}
-		delete futureKoopaTroopa;
+		CCollision::GetInstance()->Process(this, dt, coObjects);
 	}
-	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
 
@@ -103,8 +126,12 @@ void CKoopaTroopa::SetState(int state)
 	switch (state)
 	{
 		case KOOPA_TROOPA_STATE_WALKING:
-			if (this->state == KOOPA_TROOPA_STATE_REVIVE)
+			// if Mario is holding shell then Koopa Troopa will only change state then Mario will update the state later
+			if (isOnHold)
+				break;
+			else if (this->state == KOOPA_TROOPA_STATE_REVIVE){
 				y -= (2+KOOPA_TROOPA_BBOX_HEIGHT - KOOPA_TROOPA_SHELL_BBOX_HEIGHT)/2;
+			}
 			vx = -KOOPA_TROOPA_WALKING_SPEED;
 			vy = 0;
 			break;
@@ -123,7 +150,6 @@ void CKoopaTroopa::SetState(int state)
 				vx = -KOOPA_TROOPA_ROLLING_SPEED;
 			else
 				vx = KOOPA_TROOPA_ROLLING_SPEED;
-			vy = 0;
 			break;
 		case KOOPA_TROOPA_STATE_REVIVE:
 			revive_start = GetTickCount64();

@@ -3,8 +3,15 @@
 
 #include "Animation.h"
 #include "Animations.h"
-
-#include "debug.h"
+#include "Portal.h"
+#include "Object-Coin.h"
+#include "Object-Brick.h"
+#include "Object-Fireball.h"
+#include "Object-Goomba.h"
+#include "Object-KoopaTroopa.h"
+#include "Object-Mushroom.h"
+#include "Object-QuestionBlock.h"
+#include "Object-VenusFireTrap.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -34,6 +41,12 @@
 #define MARIO_STATE_SIT_RELEASE		601
 
 #define MARIO_STATE_KICK			700
+
+#define MARIO_STATE_SKILL			800
+#define MARIO_STATE_RELEASE_SKILL	801
+
+#define MARIO_STATE_HOLD_SHELL		900
+#define MARIO_STATE_RELEASE_SHELL	901
 
 #pragma region ANIMATION_ID
 
@@ -122,6 +135,9 @@ class CMario : public CGameObject
 	ULONGLONG untouchable_start;
 	BOOLEAN isOnPlatform;
 	int coin;
+	bool usingSkill;
+	bool holdingShell;
+	LPKOOPATROOPA shell;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e, DWORD dt);
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e, DWORD dt);
@@ -133,6 +149,7 @@ class CMario : public CGameObject
 	int GetAniIdBig();
 	int GetAniIdSmall();
 	void LevelDown();
+	void HoldShell();
 
 public:
 	CMario(float x, float y) : CGameObject(OBJECT_TYPE_MARIO, x, y)
@@ -147,12 +164,16 @@ public:
 		untouchable_start = -1;
 		isOnPlatform = false;
 		coin = 0;
+		usingSkill = false;
+		holdingShell = false;
+		shell = NULL;
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
 	void Render();
 	void SetState(int state);
 	void Hit();
 	void LevelUp();
+	int GetLevel() { return level; }
 
 	int IsCollidable()
 	{ 

@@ -183,6 +183,7 @@ void CCollision::Scan(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* objDe
 			processedFlags[i] = true;
 			continue;	
 		}
+
 		
 		LPCOLLISIONEVENT e = SweptAABB(objSrc, dt, objDests->at(i));
 		if (e->WasCollided()==1)

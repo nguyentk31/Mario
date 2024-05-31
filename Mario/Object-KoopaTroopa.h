@@ -24,14 +24,17 @@ class CKoopaTroopa : public CGameObject
 protected:
 	float ay;
 	ULONGLONG shell_start, revive_start;
+	bool isOnHold;
 public: 	
 	CKoopaTroopa(float x, float y): CGameObject(OBJECT_TYPE_KOOPA_TROOPA, x, y) {
 		ay = KOOPA_TROOPA_GRAVITY;
+		isOnHold = false;
 		SetState(KOOPA_TROOPA_STATE_WALKING);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void Render();
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
+	void OnHold(bool x) { isOnHold = x; }
 
 	int IsCollidable() { return 1; };
 	int IsBlocking() { return 0; }
@@ -39,3 +42,5 @@ public:
 	void OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt);
 	void SetState(int state);
 };
+
+typedef CKoopaTroopa* LPKOOPATROOPA;

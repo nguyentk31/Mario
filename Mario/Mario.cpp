@@ -4,17 +4,6 @@
 #include "Mario.h"
 #include "Game.h"
 
-#include "Portal.h"
-#include "Object-Coin.h"
-#include "Object-Fireball.h"
-#include "Object-Goomba.h"
-#include "Object-KoopaTroopa.h"
-#include "Object-Mushroom.h"
-#include "Object-QuestionBlock.h"
-#include "Object-VenusFireTrap.h"
-
-#include "Collision.h"
-
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
@@ -32,6 +21,39 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	isOnPlatform = false;
 
 	CCollision::GetInstance()->Process(this, dt, coObjects);
+
+	if (holdingShell)
+		HoldShell();
+}
+
+void CMario::HoldShell()
+{
+	if (shell == NULL) return;
+
+	float shellX, shellY;
+
+	if (shell->GetState() != KOOPA_TROOPA_STATE_WALKING) {
+		if (!usingSkill) {
+			shell->OnHold(false);
+			shell->SetState(KOOPA_TROOPA_STATE_ROLLING);
+			holdingShell = false;
+		}
+		shellX = x + (nx > 0 ? 1 : -1) * (MARIO_BIG_BBOX_WIDTH+KOOPA_TROOPA_BBOX_WIDTH-8)/2;
+		shellY = y;
+		shell->SetPosition(shellX, shellY);
+	} else {
+		if (level == MARIO_LEVEL_SMALL) {
+			shellX = x + (nx > 0 ? 1 : -1) * (MARIO_SMALL_BBOX_WIDTH+KOOPA_TROOPA_BBOX_WIDTH+4)/2;
+			shellY = y - MARIO_SMALL_BBOX_HEIGHT / 2;
+		} else {
+			shellX = x + (nx > 0 ? 1 : -1) * (MARIO_BIG_BBOX_WIDTH+KOOPA_TROOPA_BBOX_WIDTH+4)/2;
+			shellY = y - MARIO_BIG_BBOX_HEIGHT / 2;
+		}
+		shell->SetPosition(shellX, shellY);
+		shell->OnHold(false);
+		shell->SetState(KOOPA_TROOPA_STATE_WALKING);
+		holdingShell = false;
+	}
 }
 
 void CMario::OnNoCollision(DWORD dt)
@@ -42,30 +64,42 @@ void CMario::OnNoCollision(DWORD dt)
 
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 {
-	if (e->ny != 0 && e->obj->IsBlocking())
-	{
-		vy = 0;
-		if (e->ny < 0) isOnPlatform = true;
-	}
-	else if (e->nx != 0 && e->obj->IsBlocking())
-	{
-		vx = 0;
+	if (e->obj->IsBlocking()) {
+		if (dynamic_cast<CQuestionBlock*>(e->obj))
+			OnCollisionWithQuestionBlock(e, dt);
+
+		if (e->ny != 0 && e->obj->IsBlocking())
+		{
+			vy = 0;
+			if (e->ny < 0) isOnPlatform = true;
+		}
+		else if (e->nx != 0 && e->obj->IsBlocking())
+		{
+			vx = 0;
+		}
+
+	} else {
+		if (dynamic_cast<CGoomba*>(e->obj))
+			OnCollisionWithGoomba(e, dt);
+		else if (dynamic_cast<CCoin*>(e->obj))
+			OnCollisionWithCoin(e, dt);
+		else if (dynamic_cast<CPortal*>(e->obj))
+			OnCollisionWithPortal(e, dt);
+		else if (dynamic_cast<CMushroom*>(e->obj))
+			OnCollisionWithMushroom(e, dt);
+		else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj))
+			Hit();
+		else if (dynamic_cast<CKoopaTroopa*>(e->obj))
+			OnCollisionWithKoopaTroopa(e, dt);
+		
+		// if colision direction is the same as the direction of the object, so source was static and target was moving
+		// if colision direction is the opposite of the direction of the object, so source was moving and target was static
+		if (e->ny != 0)
+			y = (y/e->ny) > 0 ? y : y + vy * dt;
+		else if (e->nx != 0)
+			x = (x/e->nx) > 0 ? x : x + vx * dt;
 	}
 	
-	if (dynamic_cast<CGoomba*>(e->obj))
-		OnCollisionWithGoomba(e, dt);
-	else if (dynamic_cast<CCoin*>(e->obj))
-		OnCollisionWithCoin(e, dt);
-	else if (dynamic_cast<CPortal*>(e->obj))
-		OnCollisionWithPortal(e, dt);
-	else if (dynamic_cast<CQuestionBlock*>(e->obj))
-		OnCollisionWithQuestionBlock(e, dt);
-	else if (dynamic_cast<CMushroom*>(e->obj))
-		OnCollisionWithMushroom(e, dt);
-	else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj))
-		Hit();
-	else if (dynamic_cast<CKoopaTroopa*>(e->obj))
-		OnCollisionWithKoopaTroopa(e, dt);
 }
 
 void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt) {
@@ -83,7 +117,12 @@ void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt) {
 		break;
 	case KOOPA_TROOPA_STATE_SHELL:
 	case KOOPA_TROOPA_STATE_REVIVE:
-		koopaTroopa->SetState(KOOPA_TROOPA_STATE_ROLLING);
+		if (usingSkill) {
+			shell = koopaTroopa;
+			shell->OnHold(true);
+			holdingShell = true;
+		} else
+			koopaTroopa->SetState(KOOPA_TROOPA_STATE_ROLLING);
 		break;
 	case KOOPA_TROOPA_STATE_ROLLING:
 		if (e->ny < 0) {
@@ -327,7 +366,7 @@ void CMario::Render()
 		aniId = GetAniIdSmall();
 
 	animations->Get(aniId)->Render(x, y);
-	
+
 	DebugOutTitle(L"Coins: %d", coin);
 }
 
@@ -378,12 +417,12 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_SIT:
-		if (isOnPlatform && level != MARIO_LEVEL_SMALL)
+		if (isOnPlatform && level != MARIO_LEVEL_SMALL && !holdingShell)
 		{
 			state = MARIO_STATE_IDLE;
 			isSitting = true;
 			vx = 0; vy = 0.0f;
-			y +=MARIO_SIT_HEIGHT_ADJUST;
+			y += MARIO_SIT_HEIGHT_ADJUST;
 		}
 		break;
 
@@ -407,6 +446,15 @@ void CMario::SetState(int state)
 		vx = 0;
 		ax = 0;
 		break;
+
+	case MARIO_STATE_SKILL:
+		usingSkill = true;
+		SetState(this->state);
+		return;
+	case MARIO_STATE_RELEASE_SKILL:
+		usingSkill = false;
+		SetState(this->state);
+		return;
 	}
 
 	CGameObject::SetState(state);
