@@ -203,6 +203,22 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CPortal(x, y, r, b, scene_id);
 		break;
 	}
+	case OBJECT_TYPE_SPONSOR:
+	{
+		int num_objects = atoi(tokens[3].c_str());
+		vector<int> objects_type;
+		vector<vector<float>> objects_position;
+		for (int i = 0; i < num_objects; i++)
+		{
+			int type = atoi(tokens[4 + i * 3].c_str());
+			float x = (float)atof(tokens[5 + i * 3].c_str());
+			float y = (float)atof(tokens[6 + i * 3].c_str());
+			objects_type.push_back(type);
+			objects_position.push_back({ x, y });
+		}
+		obj = new CSponsor(x, y, objects_type, objects_position);
+		break;
+	}
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
@@ -379,21 +395,23 @@ void CPlayScene::AddObject(LPGAMEOBJECT obj)
 	int objtype = obj->GetObjectTypeID();
 	int objpos = static_cast<int>(objects.size());
 
-
-	// Find the position of object in Render order
-	int renderpos = 0;
-	for (size_t i = 0; i < orderRenderOfObjectsType.size(); i++)
-	{
-		renderpos += numbersOfObjectsForEachType[orderRenderOfObjectsType[i]];
-		if (orderRenderOfObjectsType[i] == objtype)
-			break;
+	// Skip sponsor objects when rendering
+	if (objtype != OBJECT_TYPE_SPONSOR) {
+		// Find the position of object in Render order
+		int renderpos = 0;
+		for (size_t i = 0; i < orderRenderOfObjectsType.size(); i++)
+		{
+			renderpos += numbersOfObjectsForEachType[orderRenderOfObjectsType[i]];
+			if (orderRenderOfObjectsType[i] == objtype)
+				break;
+		}
+		if (renderpos > objpos)
+			orderRenderOfObjects.push_back(objpos);
+		else
+			orderRenderOfObjects.insert(orderRenderOfObjects.begin() + renderpos, objpos);
 	}
-	if (renderpos > objpos)
-		orderRenderOfObjects.push_back(objpos);
-	else
-		orderRenderOfObjects.insert(orderRenderOfObjects.begin() + renderpos, objpos);
 
-	// Skip background objects
+	// Skip background objects when updating
 	if (objtype != OBJECT_TYPE_BACKGROUNDS) {
 		// Find the position of object in Update order
 		int updatepos = 0;
@@ -411,6 +429,27 @@ void CPlayScene::AddObject(LPGAMEOBJECT obj)
 	
 	objects.push_back(obj);
 	numbersOfObjectsForEachType[objtype]++;
+
+	// DebugOut(L"List object: ");
+	// for (size_t i = 0; i < objects.size(); i++) {
+	// 	DebugOut(L"%d ", objects[i]->GetObjectTypeID());
+	// }
+	// DebugOut(L"\n");
+	// DebugOut(L"List order render: ");
+	// for (size_t i = 0; i < orderRenderOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", orderRenderOfObjects[i]);
+	// }
+	// DebugOut(L"\n");
+	// DebugOut(L"List order update: ");
+	// for (size_t i = 0; i < orderUpdateOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", orderUpdateOfObjects[i]);
+	// }
+	// DebugOut(L"\n");
+	// DebugOut(L"List number of objects: ");
+	// for (size_t i = 0; i < orderRenderOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", objects[orderRenderOfObjects[i]]->GetObjectTypeID());
+	// }
+	// DebugOut(L"\n");
 }
 
 /*

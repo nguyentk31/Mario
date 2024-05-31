@@ -12,6 +12,7 @@
 #include "Object-Mushroom.h"
 #include "Object-QuestionBlock.h"
 #include "Object-VenusFireTrap.h"
+#include "Object-Sponsor.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f

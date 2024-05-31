@@ -115,7 +115,6 @@ void CVenusFireTrap::GetFireballVxVy(float mario_x, float mario_y, float &vx, fl
 	float dx = mario_x - x;
 	float dy = mario_y - y;
 	float angle = atan2(dx, dy);
-	DebugOut(L"angle: %f\n", angle);
 
 	// Define allowed angles (8 directions, 4 left and 4 right)
 	const float allowed_angles[] = {

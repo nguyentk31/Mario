@@ -96,6 +96,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 			Hit();
 		else if (dynamic_cast<CKoopaTroopa*>(e->obj))
 			OnCollisionWithKoopaTroopa(e, dt);
+		else if (dynamic_cast<CSponsor*>(e->obj))
+			dynamic_cast<CSponsor*>(e->obj)->SponseObject();
 		
 		// if colision direction is the same as the direction of the object, so source was static and target was moving
 		// if colision direction is the opposite of the direction of the object, so source was moving and target was static
