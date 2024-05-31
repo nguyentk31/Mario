@@ -308,26 +308,19 @@ void CPlayScene::Load()
 
 void CPlayScene::Update(DWORD dt)
 {
-	// Create non-background object and collision handle needed list
-	vector<LPGAMEOBJECT> nonbgObjects;
+	// Create list of update objects
+	vector<LPGAMEOBJECT> updateObjects;
 	for (size_t i = 0; i < orderUpdateOfObjects.size(); i++)
-		nonbgObjects.push_back(objects[orderUpdateOfObjects[i]]);
+		updateObjects.push_back(objects[orderUpdateOfObjects[i]]);
 
-	// DebugOut(L"Start update scene %d\n", id);
-	// DebugOut(L"Order of objects: ");
-	// for (size_t i = 0; i < orderUpdateOfObjects.size(); i++) {
-	// 	DebugOut(L"%d ", orderUpdateOfObjects[i]);
-	// }
-	// DebugOut(L"\n");
-	// Update collision object with other objects
-	for ( size_t i = 0; i < nonbgObjects.size(); i++)
+	for ( size_t i = 0; i < updateObjects.size(); i++)
 	{
-		if (!nonbgObjects[i]->IsCollidable())
+		if (!updateObjects[i]->IsCollidable())
 			continue;
 		
-		LPGAMEOBJECT obj = nonbgObjects[i];
-		nonbgObjects.erase(nonbgObjects.begin() + i);
-		obj->Update(dt, &nonbgObjects);
+		LPGAMEOBJECT obj = updateObjects[i];
+		updateObjects.erase(updateObjects.begin() + i);
+		obj->Update(dt, &updateObjects);
 		i--;
 	}
 
@@ -462,6 +455,7 @@ void CPlayScene::PurgeDeletedObjects()
 		if (o->IsDeleted())
 		{
 			int objtype = o->GetObjectTypeID();
+			DebugOut(L"[INFO] Delete object %d\n", objtype);
 			numbersOfObjectsForEachType[objtype]--;
 			delete o;
 			objects[i] = NULL;
@@ -471,6 +465,8 @@ void CPlayScene::PurgeDeletedObjects()
 
 	if (deletedIndices.size() == 0)
 		return;
+
+	DebugOut(L"[INFO] Purge %d objects\n", deletedIndices.size());
 
 	
 	// NOTE: remove_if will swap all deleted items to the end of the vector

@@ -1,6 +1,7 @@
 #include "Object-KoopaTroopa.h"
 #include "Object-QuestionBlock.h"
 #include "Object-Goomba.h"
+#include "Object-VenusFireTrap.h"
 #include "Mario.h"
 #include "Playscene.h"
 
@@ -21,7 +22,6 @@ void CKoopaTroopa::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
 	y += vy * dt;
-	int x = 0;
 };
 
 void CKoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
@@ -32,29 +32,43 @@ void CKoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 		else if (e->nx != 0)
 			vx = -vx;
 
-		if (dynamic_cast<CQuestionBlock*>(e->obj))
+		if (state == KOOPA_TROOPA_STATE_ROLLING && dynamic_cast<CQuestionBlock*>(e->obj))
 			e->obj->SetState(QUESTION_BLOCK_STATE_BOUNCING);
 	} else {
-		if (e->ny != 0 )
-			y += vy * dt;
-		else if (e->nx != 0)
-			x += vx * dt;
-		
 		if (state == KOOPA_TROOPA_STATE_ROLLING) {
 			if (dynamic_cast<CGoomba*>(e->obj) && e->obj->GetState() != GOOMBA_STATE_DIE)
 				e->obj->SetState(GOOMBA_STATE_DIE);
+			else if (dynamic_cast<CVenusFireTrap*>(e->obj))
+				e->obj->Delete();
+		} else if (state == KOOPA_TROOPA_STATE_SHELL || state == KOOPA_TROOPA_STATE_REVIVE) {
+			if (dynamic_cast<CGoomba*>(e->obj) && e->obj->GetState() != GOOMBA_STATE_DIE) {
+				e->obj->SetState(GOOMBA_STATE_DIE);
+				SetState(KOOPA_TROOPA_STATE_DIE);
+			} else if (dynamic_cast<CVenusFireTrap*>(e->obj)) {
+				e->obj->Delete();
+				SetState(KOOPA_TROOPA_STATE_DIE);
+			}
 		}
+
+		// if colision direction is the same as the direction of the object, so source was static and target was moving
+		// if colision direction is the opposite of the direction of the object, so source was moving and target was static
+		if (e->ny != 0)
+			y = (vy/e->ny) > 0 ? y : y + vy * dt;
+		else if (e->nx != 0)
+			x = (vx/e->nx) > 0 ? x : x + vx * dt;
 	}
 }
 
 void CKoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-
-	if (state == KOOPA_TROOPA_STATE_SHELL && GetTickCount64() - shell_start > KOOPA_TROOPA_STATE_SHELL_TIMEOUT)
+	if (state == KOOPA_TROOPA_STATE_DIE && GetTickCount64() - die_start > KOOPA_TROOPA_STATE_DIE_TIMEOUT) {
+		isDeleted = true;
+		return;
+	} else if (state == KOOPA_TROOPA_STATE_SHELL && GetTickCount64() - shell_start > KOOPA_TROOPA_STATE_SHELL_TIMEOUT)
 		SetState(KOOPA_TROOPA_STATE_REVIVE);
 	else if (state == KOOPA_TROOPA_STATE_REVIVE && GetTickCount64() - revive_start > KOOPA_TROOPA_STATE_REVIVE_TIMEOUT)
 		SetState(KOOPA_TROOPA_STATE_WALKING);
-	else if (!(state == KOOPA_TROOPA_STATE_SHELL || state == KOOPA_TROOPA_STATE_REVIVE)) {
+	else if (state == KOOPA_TROOPA_STATE_ROLLING || state == KOOPA_TROOPA_STATE_WALKING) {
 		vy += ay * dt;
 		if (state == KOOPA_TROOPA_STATE_WALKING) {
 			// Check whether present Koopa Troopa will falling or not
@@ -91,8 +105,10 @@ void CKoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			int i = 0;
 			return;
 		}
-		CCollision::GetInstance()->Process(this, dt, coObjects);
+	} else if (state == KOOPA_TROOPA_STATE_DIE) {
+		vy += ay * dt;
 	}
+	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
 
 
@@ -107,6 +123,7 @@ void CKoopaTroopa::Render()
 			else
 				ani = ID_ANI_KOOPA_TROOPA_WALKING_LEFT;
 			break;
+		case KOOPA_TROOPA_STATE_DIE:
 		case KOOPA_TROOPA_STATE_SHELL:
 			ani = ID_ANI_KOOPA_TROOPA_SHELL;
 			break;
@@ -153,6 +170,10 @@ void CKoopaTroopa::SetState(int state)
 			break;
 		case KOOPA_TROOPA_STATE_REVIVE:
 			revive_start = GetTickCount64();
+			break;
+		case KOOPA_TROOPA_STATE_DIE:
+			vy = -KOOPA_TROOPA_DEFLECT_SPEED;
+			die_start = GetTickCount64();
 			break;
 	}
 	CGameObject::SetState(state);

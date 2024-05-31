@@ -161,7 +161,7 @@ Sprites_Animations/VenusFireTrap.txt
 12	584	370
 
 # Venus Fire Trap
-#6	368	384
+6	368	384
 
 # QuestionBlock
 9	184	360	1

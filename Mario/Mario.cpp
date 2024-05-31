@@ -32,6 +32,12 @@ void CMario::HoldShell()
 
 	float shellX, shellY;
 
+	if (shell->GetState() == KOOPA_TROOPA_STATE_DIE) {
+		shell = NULL;
+		holdingShell = false;
+		return;
+	}
+
 	if (shell->GetState() != KOOPA_TROOPA_STATE_WALKING) {
 		if (!usingSkill) {
 			shell->OnHold(false);
@@ -65,9 +71,6 @@ void CMario::OnNoCollision(DWORD dt)
 void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 {
 	if (e->obj->IsBlocking()) {
-		if (dynamic_cast<CQuestionBlock*>(e->obj))
-			OnCollisionWithQuestionBlock(e, dt);
-
 		if (e->ny != 0 && e->obj->IsBlocking())
 		{
 			vy = 0;
@@ -78,6 +81,8 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 			vx = 0;
 		}
 
+		if (dynamic_cast<CQuestionBlock*>(e->obj))
+			OnCollisionWithQuestionBlock(e, dt);
 	} else {
 		if (dynamic_cast<CGoomba*>(e->obj))
 			OnCollisionWithGoomba(e, dt);
@@ -95,9 +100,9 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 		// if colision direction is the same as the direction of the object, so source was static and target was moving
 		// if colision direction is the opposite of the direction of the object, so source was moving and target was static
 		if (e->ny != 0)
-			y = (y/e->ny) > 0 ? y : y + vy * dt;
+			y = (vy/e->ny) > 0 ? y : y + vy * dt;
 		else if (e->nx != 0)
-			x = (x/e->nx) > 0 ? x : x + vx * dt;
+			x = (vx/e->nx) > 0 ? x : x + vx * dt;
 	}
 	
 }
@@ -107,6 +112,8 @@ void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt) {
 	int koopaTroopaState = koopaTroopa->GetState();
 	switch (koopaTroopaState)
 	{
+	case KOOPA_TROOPA_STATE_DIE:
+		break;
 	case KOOPA_TROOPA_STATE_WALKING:
 		if (e->ny < 0) {
 			koopaTroopa->SetState(KOOPA_TROOPA_STATE_SHELL);
@@ -442,6 +449,10 @@ void CMario::SetState(int state)
 
 	case MARIO_STATE_DIE:
 		DebugOut(L"[INFO] Mario died!\n");
+		if (holdingShell) {
+			shell->OnHold(false);
+			holdingShell = false;
+		}
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
 		ax = 0;
