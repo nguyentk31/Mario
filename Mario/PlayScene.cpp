@@ -16,8 +16,9 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 {
 	player = NULL;
 	key_handler = new CSampleKeyHandler(this);
-	numbersOfObjects = vector<int>(50, 0);
-	orderOfObjects = {
+
+	numbersOfObjectsForEachType = vector<int>(20, 0);
+	orderRenderOfObjectsType = {
 		OBJECT_TYPE_BACKGROUNDS,
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
@@ -29,6 +30,18 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_QUESTION_BLOCK,
 		OBJECT_TYPE_FIREBALL,
 		OBJECT_TYPE_MARIO,
+	};
+	orderUpdateOfObjectsType = {
+		OBJECT_TYPE_MARIO,
+		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_BRICK,
+		OBJECT_TYPE_BOX,
+		OBJECT_TYPE_MUSHROOM,
+		OBJECT_TYPE_KOOPA_TROOPA,
+		OBJECT_TYPE_GOOMBA,
+		OBJECT_TYPE_VENUS_FIRE_TRAP,
+		OBJECT_TYPE_COIN,
+		OBJECT_TYPE_FIREBALL,
 	};
 
 }
@@ -107,10 +120,8 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	// skip invalid lines - an object set must have at least id, x, y
 	if (tokens.size() < 2) {
-		DebugOut(L"[ERROR] Invalid object set: %s\n", ToWSTR(line).c_str());
 		return;
 	}
-
 	int object_type = atoi(tokens[0].c_str());
 	float x = (float)atof(tokens[1].c_str());
 	float y = (float)atof(tokens[2].c_str());
@@ -119,7 +130,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 	switch (object_type)
 	{
-	case OBJECT_TYPE_MARIO:
+	case OBJECT_TYPE_MARIO: {
 		if (player!=NULL) 
 		{
 			DebugOut(L"[ERROR] MARIO object was created before!\n");
@@ -130,6 +141,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 
 		DebugOut(L"[INFO] Player object has been created!\n");
 		break;
+	}
 	case OBJECT_TYPE_GOOMBA: {
 		obj = new CGoomba(x,y); break;
 		break;
@@ -139,24 +151,6 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CCoin(x, y);
 		break;
 	}
-	case OBJECT_TYPE_PLATFORM:
-	{
-		float cell_width = (float)atof(tokens[3].c_str());
-		float cell_height = (float)atof(tokens[4].c_str());
-		int length = atoi(tokens[5].c_str());
-		int sprite_begin = atoi(tokens[6].c_str());
-		int sprite_middle = atoi(tokens[7].c_str());
-		int sprite_end = atoi(tokens[8].c_str());
-
-		obj = new CPlatform(
-			x, y,
-			cell_width, cell_height, length,
-			sprite_begin, sprite_middle, sprite_end
-		);
-
-		break;
-	}
-
 	case OBJECT_TYPE_BRICK:
 	{
 		float cell_width = (float)atof(tokens[3].c_str());
@@ -178,14 +172,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	}
 	case OBJECT_TYPE_BOX:
 	{
-		float cell_width = (float)atof(tokens[3].c_str());
-		float cell_height = (float)atof(tokens[4].c_str());
-		int lengthX = atoi(tokens[5].c_str());
-		int lengthY = atoi(tokens[6].c_str());
-		int spriteColorId = atoi(tokens[7].c_str());
-		bool rightShadow = atoi(tokens[8].c_str());
-		bool bottomShadow = atoi(tokens[9].c_str());
-		obj = new CBox(x, y, cell_width, cell_height, lengthX, lengthY, spriteColorId, rightShadow, bottomShadow);
+		int lengthx = (int)atof(tokens[3].c_str());
+		int lengthy = (int)atof(tokens[4].c_str());
+		int spriteColorId = atoi(tokens[5].c_str());
+		bool rightShadow = atoi(tokens[6].c_str());
+		bool bottomShadow = atoi(tokens[7].c_str());
+		obj = new CBox(x, y, lengthx, lengthy, spriteColorId, rightShadow, bottomShadow);
 		break;
 	}
 	case OBJECT_TYPE_QUESTION_BLOCK:
@@ -221,7 +213,7 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	obj->SetPosition(x, y);
 
 	// Add object to the scene
-	AddObject(object_type, obj);
+	AddObject(obj);
 }
 
 void CPlayScene::LoadAssets(LPCWSTR assetFile)
@@ -292,53 +284,60 @@ void CPlayScene::Load()
 	f.close();
 
 	DebugOut(L"[INFO] Done loading scene  %s\n", sceneFilePath);
+	// DebugOut(L"List object: ");
+	// for (size_t i = 0; i < objects.size(); i++) {
+	// 	DebugOut(L"%d ", objects[i]->GetObjectTypeID());
+	// }
+	// DebugOut(L"\n");
+	// DebugOut(L"List order render: ");
+	// for (size_t i = 0; i < orderRenderOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", orderRenderOfObjects[i]);
+	// }
+	// DebugOut(L"\n");
+	// DebugOut(L"List order update: ");
+	// for (size_t i = 0; i < orderUpdateOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", orderUpdateOfObjects[i]);
+	// }
+	// DebugOut(L"\n");
+	// DebugOut(L"List number of objects: ");
+	// for (size_t i = 0; i < orderRenderOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", objects[orderRenderOfObjects[i]]->GetObjectTypeID());
+	// }
+	// DebugOut(L"\n");
 }
 
 void CPlayScene::Update(DWORD dt)
 {
 	// Create non-background object and collision handle needed list
 	vector<LPGAMEOBJECT> nonbgObjects;
-	for (size_t i = 0; i < objects.size(); i++)
-	{
-		if (objects[i]->IsBackground())
-			continue;
-		else
-			// Reverse the order of non-background objects to update them in the correct order
-			nonbgObjects.insert(nonbgObjects.begin(), objects[i]);
+	for (size_t i = 0; i < orderUpdateOfObjects.size(); i++)
+		nonbgObjects.push_back(objects[orderUpdateOfObjects[i]]);
 
-	}
-
+	// DebugOut(L"Start update scene %d\n", id);
+	// DebugOut(L"Order of objects: ");
+	// for (size_t i = 0; i < orderUpdateOfObjects.size(); i++) {
+	// 	DebugOut(L"%d ", orderUpdateOfObjects[i]);
+	// }
+	// DebugOut(L"\n");
 	// Update collision object with other objects
-	size_t numNonBgObjects = nonbgObjects.size();
-	for ( int i = 0; i < numNonBgObjects; i++)
+	for ( size_t i = 0; i < nonbgObjects.size(); i++)
 	{
 		if (!nonbgObjects[i]->IsCollidable())
 			continue;
 		
 		LPGAMEOBJECT obj = nonbgObjects[i];
-		// nonbgObjects.erase(nonbgObjects.begin() + i);
+		nonbgObjects.erase(nonbgObjects.begin() + i);
 		obj->Update(dt, &nonbgObjects);
-		// i--;
-		// numNonBgObjects--;
+		i--;
+	}
+
+	// Sort question blocks if needed
+	if (QuestionBlocksStateChanged)
+	{
+		SortQuestionBlocks();
+		QuestionBlocksStateChanged = false;
 	}
 	
-
-	// Swap dead question block
-	auto question_blocks = find_if(objects.begin(), objects.end(), [](CGameObject* obj) {
-		return dynamic_cast<CQuestionBlock*>(obj) != nullptr;
-	});
-	sort(question_blocks, objects.end(), [](CGameObject* a, CGameObject* b) {
-		CQuestionBlock* qa = dynamic_cast<CQuestionBlock*>(a);
-		CQuestionBlock* qb = dynamic_cast<CQuestionBlock*>(b);
-		if (qa && qb) {
-			if (qa->GetState() != QUESTION_BLOCK_STATE_ALIVE && qb->GetState() == QUESTION_BLOCK_STATE_ALIVE)
-				return true;
-		}
-		return false;
-	});
-
-	
-
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
 
@@ -359,36 +358,66 @@ void CPlayScene::Update(DWORD dt)
 
 void CPlayScene::Render()
 {
-	for (int i = 0; i < objects.size(); i++)
-		objects[i]->Render();
+	for (size_t i = 0; i < orderRenderOfObjects.size(); i++)
+		objects[orderRenderOfObjects[i]]->Render();
+}
+
+void CPlayScene::SortQuestionBlocks()
+{
+	// Sort question blocks by state
+	auto question_blocks = find_if(orderUpdateOfObjects.begin(), orderUpdateOfObjects.end(), [this](int i) {
+		return (objects[i]->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK);
+	});
+
+	sort(question_blocks, question_blocks + numbersOfObjectsForEachType[OBJECT_TYPE_QUESTION_BLOCK], [this](int a, int b) {
+		CQuestionBlock* qa = dynamic_cast<CQuestionBlock*>(objects[a]);
+		CQuestionBlock* qb = dynamic_cast<CQuestionBlock*>(objects[b]);
+		if (qa && qb) {
+			if (qa->GetState() == QUESTION_BLOCK_STATE_ALIVE && qb->GetState() != QUESTION_BLOCK_STATE_ALIVE)
+				return true;
+		}
+		return false;
+	});
 }
 
 // Add new object to current scene
-void CPlayScene::AddObject(int object_type, LPGAMEOBJECT obj)
+void CPlayScene::AddObject(LPGAMEOBJECT obj)
 {
-	// Find the position to insert the new object
-	int pos = 0;
-	for (int i = 0; i < orderOfObjects.size(); i++)
+	int objtype = obj->GetObjectTypeID();
+	int objpos = static_cast<int>(objects.size());
+
+
+	// Find the position of object in Render order
+	int renderpos = 0;
+	for (size_t i = 0; i < orderRenderOfObjectsType.size(); i++)
 	{
-		pos += numbersOfObjects[orderOfObjects[i]];
-		if (orderOfObjects[i] == object_type)
+		renderpos += numbersOfObjectsForEachType[orderRenderOfObjectsType[i]];
+		if (orderRenderOfObjectsType[i] == objtype)
 			break;
-
 	}
-
-
-	// Insert the new object
-	if (pos < objects.size())
-	{
-		objects.insert(objects.begin() + pos, obj);
-	}
+	if (renderpos > objpos)
+		orderRenderOfObjects.push_back(objpos);
 	else
-	{
-		objects.push_back(obj);
-	}
+		orderRenderOfObjects.insert(orderRenderOfObjects.begin() + renderpos, objpos);
 
-	// Increase the number of objects of this type
-	numbersOfObjects[object_type]++;
+	// Skip background objects
+	if (objtype != OBJECT_TYPE_BACKGROUNDS) {
+		// Find the position of object in Update order
+		int updatepos = 0;
+		for (size_t i = 0; i < orderUpdateOfObjectsType.size(); i++)
+		{
+			updatepos += numbersOfObjectsForEachType[orderUpdateOfObjectsType[i]];
+			if (orderUpdateOfObjectsType[i] == objtype)
+				break;
+		}
+		if (updatepos > objpos)
+			orderUpdateOfObjects.push_back(objpos);
+		else
+			orderUpdateOfObjects.insert(orderUpdateOfObjects.begin() + updatepos, objpos);
+	}
+	
+	objects.push_back(obj);
+	numbersOfObjectsForEachType[objtype]++;
 }
 
 /*
@@ -425,20 +454,44 @@ bool CPlayScene::IsGameObjectDeleted(const LPGAMEOBJECT& o) { return o == NULL; 
 
 void CPlayScene::PurgeDeletedObjects()
 {
-	vector<LPGAMEOBJECT>::iterator it;
-	for (it = objects.begin(); it != objects.end(); it++)
+	// Remove all deleted objects
+	std::vector<int> deletedIndices;
+	for (int i = 0; i < objects.size(); i++)
 	{
-		LPGAMEOBJECT o = *it;
+		LPGAMEOBJECT o = objects[i];
 		if (o->IsDeleted())
 		{
+			int objtype = o->GetObjectTypeID();
+			numbersOfObjectsForEachType[objtype]--;
 			delete o;
-			*it = NULL;
+			objects[i] = NULL;
+			deletedIndices.push_back(i);
 		}
 	}
 
+	if (deletedIndices.size() == 0)
+		return;
+
+	
 	// NOTE: remove_if will swap all deleted items to the end of the vector
 	// then simply trim the vector, this is much more efficient than deleting individual items
 	objects.erase(
 		std::remove_if(objects.begin(), objects.end(), CPlayScene::IsGameObjectDeleted),
 		objects.end());
+	
+	// Update order of objects
+	for (size_t i = deletedIndices.size(); i > 0; i--)
+	{
+		int index = deletedIndices[i-1];
+
+		orderRenderOfObjects.erase(
+			remove_if(orderRenderOfObjects.begin(), orderRenderOfObjects.end(), [index](int j) { return j == index; }),
+			orderRenderOfObjects.end());
+		transform(orderRenderOfObjects.begin(), orderRenderOfObjects.end(), orderRenderOfObjects.begin(), [index](int j) { return j > index ? j - 1 : j; });
+		
+		orderUpdateOfObjects.erase(
+			remove_if(orderUpdateOfObjects.begin(), orderUpdateOfObjects.end(), [index](int j) { return j == index; }),
+			orderUpdateOfObjects.end());
+		transform(orderUpdateOfObjects.begin(), orderUpdateOfObjects.end(), orderUpdateOfObjects.begin(), [index](int j) { return j > index ? j - 1 : j; });
+	}
 }

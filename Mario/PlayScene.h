@@ -2,12 +2,10 @@
 #include "Game.h"
 #include "Textures.h"
 #include "Scene.h"
-#include "GameObject.h"
 #include "Mario.h"
-#include "Platform.h"
 #include "Portal.h"
-#include "Backgrounds.h"
-#include "Box.h"
+#include "Object-Backgrounds.h"
+#include "Object-Box.h"
 #include "Object-Brick.h"
 #include "Object-Coin.h"
 #include "Object-Goomba.h"
@@ -25,8 +23,15 @@ protected:
 
 	vector<LPGAMEOBJECT> objects;
 	// Numbers of each object type in the scene
-	vector<int> numbersOfObjects;
-	vector<int> orderOfObjects;
+	vector<int> numbersOfObjectsForEachType;
+	vector<int> orderRenderOfObjectsType;
+	vector<int> orderRenderOfObjects;
+	vector<int> orderUpdateOfObjectsType;
+	vector<int> orderUpdateOfObjects;
+
+	// Sort question blocks by state
+	bool QuestionBlocksStateChanged = false;
+	void SortQuestionBlocks();
 
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
@@ -44,7 +49,9 @@ public:
 	virtual void Render();
 	virtual void Unload();
 	// Add new object to the current scene
-	void AddObject(int object_type, LPGAMEOBJECT obj);
+	void AddObject(LPGAMEOBJECT obj);
+	// Sort question blocks
+	void QBLockStateChanged() { QuestionBlocksStateChanged = true; }
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

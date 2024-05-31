@@ -37,10 +37,9 @@ struct CCollisionEvent
 
 	int WasCollided(); 
 
-	static bool compare(const LPCOLLISIONEVENT& a, LPCOLLISIONEVENT& b)
-	{
-		return a->t < b->t;
-	}
+	// sort collision events by time
+	// if t is the same, sort by obj's blocking property (blocking object comes first)
+	static bool compare(const LPCOLLISIONEVENT& a,const LPCOLLISIONEVENT& b);
 };
 
 class CCollision
@@ -66,22 +65,32 @@ public:
 		LPGAMEOBJECT objSrc, 
 		DWORD dt,
 		LPGAMEOBJECT objDest); 
+
 	void Scan(
 		LPGAMEOBJECT objSrc, 
 		DWORD dt, 
-		vector<LPGAMEOBJECT>* objDests, 
-		vector<LPCOLLISIONEVENT>& coEvents);
+		vector<LPGAMEOBJECT>* objDests,
+		vector<bool>& processedFlags, 
+		LPCOLLISIONEVENT& firstColEvent,
+		int& colEventIndex);
+	// void Scan(
+	// 	LPGAMEOBJECT objSrc, 
+	// 	DWORD dt, 
+	// 	vector<LPGAMEOBJECT>* objDests, 
+	// 	vector<LPCOLLISIONEVENT>& coEvents);
 
-	void Filter(
-		LPGAMEOBJECT objSrc,
-		vector<LPCOLLISIONEVENT>& coEvents,
-		LPCOLLISIONEVENT &colX,
-		LPCOLLISIONEVENT &colY, 
-		int filterBlock,		
-		int filterX,
-		int filterY);
+	// void Filter(
+	// 	LPGAMEOBJECT objSrc,
+	// 	vector<LPCOLLISIONEVENT>& coEvents,
+	// 	LPCOLLISIONEVENT &colX,
+	// 	LPCOLLISIONEVENT &colY, 
+	// 	int filterBlock,		
+	// 	int filterX,
+	// 	int filterY);
 
 	void Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* coObjects);
+	void CollisionWithBlockingObj(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent);
+	void CollisionWithNonBlockingObj(LPGAMEOBJECT objSr, DWORD dt, LPCOLLISIONEVENT colEvent);
 
 	static CCollision* GetInstance();
 };

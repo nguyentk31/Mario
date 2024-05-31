@@ -2,29 +2,29 @@
 
 void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if ( this->state != COIN_STATE_BOUNDING )
-		return;
-
-	if (this->y < this->originalY - COIN_BOUCING_DISTANCE && this->vy < 0) 
-	{
-		this->vy = COIN_BOUCING_SPEED;
+	if (vy > 0)
+		falling_period -= dt;
+	
+	if (falling_period <= 0)
+		isDeleted = true;
+	else {
+		vy += ay * dt;
+		y += vy * dt;
 	}
-	else if (this->y > this->originalY - COIN_BOUCING_DISTANCE / 2 && this->vy > 0)
-	{
-		this->Delete();
-	}
-
-	y += vy * dt;
 }
 
-void CCoin::Render()
+void CCoin::SetState(int state)
 {
-	CAnimations::GetInstance()->Get(ID_ANI_COIN)->Render(x, y);
-}
-
-int CCoin::IsCollidable()
-{
-	return (this->state == COIN_STATE_BOUNDING);
+	CGameObject::SetState(state);
+	switch (state)
+	{
+	case COIN_STATE_IDLE:
+		vy = 0;
+		break;
+	case COIN_STATE_BOUNCING:
+		vy = -COIN_SPEED_BOUNCING;
+		break;
+	}
 }
 
 void CCoin::GetBoundingBox(float& l, float& t, float& r, float& b)

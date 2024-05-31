@@ -2,7 +2,6 @@
 #include "Mario.h"
 #include "PlayScene.h"
 #include "Object-Fireball.h"
-#include "AssetIDs.h"
 
 void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -85,7 +84,7 @@ void CVenusFireTrap::SetState(int state)
 			vy = 0;
 			break;
 		case VFT_STATE_RISING:
-			vy = -VFT_RISING_SPEED;
+			vy = -VFT_UP_DOWN_SPEED;
 			break;
 		case VFT_STATE_AIMING:
 			aiming_start = GetTickCount();
@@ -96,7 +95,7 @@ void CVenusFireTrap::SetState(int state)
 			shooting_start = GetTickCount();
 			break;
 		case VFT_STATE_FALLING:
-			vy = VFT_RISING_SPEED;
+			vy = VFT_UP_DOWN_SPEED;
 			break;
 	}
 	CGameObject::SetState(state);
@@ -107,7 +106,7 @@ void CVenusFireTrap::ShootFireball(float mario_x, float mario_y) {
 	GetFireballVxVy(mario_x, mario_y, fireball_vx, fireball_vy);
 	CFireball* fireball = new CFireball(x, y-VFT_HEIGHT/4, fireball_vx, fireball_vy);
 	CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	current_scene->AddObject(OBJECT_TYPE_FIREBALL ,fireball);
+	current_scene->AddObject(fireball);
 }
 
 void CVenusFireTrap::GetFireballVxVy(float mario_x, float mario_y, float &vx, float &vy)

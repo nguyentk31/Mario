@@ -3,7 +3,8 @@
 #include <Windows.h>
 #include <d3dx10.h>
 #include <vector>
-
+#include "debug.h"
+#include "AssetIDs.h"
 #include "Animation.h"
 #include "Animations.h"
 #include "Sprites.h"
@@ -28,13 +29,17 @@ protected:
 
 	int state;
 
-	bool isDeleted; 
+	bool isDeleted;
+
+	int objectTypeID;
 
 public: 
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
+
+	int GetObjectTypeID() { return objectTypeID; }
 
 	int GetState() { return this->state; }
 	virtual void Delete() { isDeleted = true;  }
@@ -43,7 +48,7 @@ public:
 	void RenderBoundingBox();
 
 	CGameObject();
-	CGameObject(float x, float y) :CGameObject() { this->x = x; this->y = y; }
+	CGameObject(int objectTypeId, float x, float y) :CGameObject() { this->objectTypeID = objectTypeId; this->x = x; this->y = y; }
 
 
 	virtual void GetBoundingBox(float &left, float &top, float &right, float &bottom) = 0;

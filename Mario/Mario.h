@@ -126,7 +126,7 @@ class CMario : public CGameObject
 	void LevelDown();
 
 public:
-	CMario(float x, float y) : CGameObject(x, y)
+	CMario(float x, float y) : CGameObject(OBJECT_TYPE_MARIO, x, y)
 	{
 		isSitting = false;
 		maxVx = 0.0f;

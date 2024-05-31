@@ -1,31 +1,29 @@
 #pragma once
-
 #include "GameObject.h"
 
-#define ID_ANI_COIN 40000
-
-#define	COIN_SIZE 16
+#define	COIN_SIZE 15
 
 #define COIN_STATE_IDLE 0
-#define COIN_STATE_BOUNDING 1
+#define COIN_STATE_BOUNCING 1
 
-#define COIN_BOUCING_SPEED 0.2f
-#define COIN_BOUCING_DISTANCE 48 // Pixels
+#define COIN_FALLLING_PERIOD 200
+#define COIN_GRAVITY 0.002f
+#define COIN_SPEED_BOUNCING 0.5f
+
 
 class CCoin : public CGameObject {
 protected:
-	float originalY;
+	float ay;
+	int falling_period;
 public:
-	CCoin(float x, float y, int state = 0) : CGameObject(x, y) {
-		this->state = state;
-		if (state == COIN_STATE_BOUNDING) {
-			this->originalY = y;
-			vy = -COIN_BOUCING_SPEED;
-		}
+	CCoin(float x, float y) : CGameObject(OBJECT_TYPE_COIN, x, y) {
+		ay = COIN_GRAVITY;
+		falling_period = COIN_FALLLING_PERIOD;
 	}
-	void Render();
 	void Update(DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void GetBoundingBox(float& l, float& t, float& r, float& b);
-	int IsCollidable();
+	void Render() { CAnimations::GetInstance()->Get(ID_ANI_COIN)->Render(x, y); }
+	int IsCollidable() { return vy != 0; }
 	int IsBlocking() { return 0; }
+	void SetState(int state);
+	void GetBoundingBox(float& l, float& t, float& r, float& b);
 };

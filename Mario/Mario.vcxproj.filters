@@ -84,10 +84,10 @@
     <ClInclude Include="Mario.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Backgrounds.h">
+    <ClInclude Include="Object-Backgrounds.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Box.h">
+    <ClInclude Include="Object-Box.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Object-QuestionBlock.h">
@@ -167,10 +167,10 @@
     <ClCompile Include="Object-Brick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Backgrounds.cpp">
+    <ClCompile Include="Object-Backgrounds.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
+    <ClCompile Include="Object-Box.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object-QuestionBlock.cpp">

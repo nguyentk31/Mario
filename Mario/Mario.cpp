@@ -81,7 +81,7 @@ void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e)
 		{
 			coin++;
 		}
-		else if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_LIFE)
+		else if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_LEVEL_ITEM)
 		{
 			QuestionBlock->SetHitX(x);
 		}
@@ -371,6 +371,7 @@ void CMario::SetState(int state)
 		break;
 
 	case MARIO_STATE_DIE:
+		DebugOut(L"[INFO] Mario died!\n");
 		vy = -MARIO_JUMP_DEFLECT_SPEED;
 		vx = 0;
 		ax = 0;

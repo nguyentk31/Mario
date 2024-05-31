@@ -10,18 +10,16 @@
 #define KOOPA_TROOPA_BBOX_HEIGHT 27
 
 #define KOOPA_TROOPA_STATE_WALKING 1
-
-#define ID_ANI_KOOPA_TROOPA_WALKING_RIGHT 120100
-#define ID_ANI_KOOPA_TROOPA_WALKING_LEFT 120200
-#define ID_ANI_KOOPA_TROOPA_SHELL 120300
-#define ID_ANI_KOOPA_TROOPA_REVIVE 120400
+#define KOOPA_TROOPA_STATE_SHELL 2
+#define KOOPA_TROOPA_STATE_ROLLING 3
+#define KOOPA_TROOPA_STATE_REVIVE 4
 
 class CKoopaTroopa : public CGameObject
 {
 protected:
 	float ay; 
 public: 	
-	CKoopaTroopa(float x, float y): CGameObject(x, y) {
+	CKoopaTroopa(float x, float y): CGameObject(OBJECT_TYPE_KOOPA_TROOPA, x, y) {
 		this->ay = KOOPA_TROOPA_GRAVITY;
 		this->vx = -KOOPA_TROOPA_WALKING_SPEED;
 		this->vy = 0;

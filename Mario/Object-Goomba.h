@@ -10,32 +10,23 @@
 
 #define GOOMBA_DIE_TIMEOUT 500
 
-#define GOOMBA_STATE_WALKING 100
-#define GOOMBA_STATE_DIE 200
-
-#define ID_ANI_GOOMBA_WALKING 30100
-#define ID_ANI_GOOMBA_DIE 30200
+#define GOOMBA_STATE_WALKING 1
+#define GOOMBA_STATE_DIE 2
 
 class CGoomba : public CGameObject
 {
-protected:
-	float ax;				
+protected:			
 	float ay; 
-
 	ULONGLONG die_start;
-
-
 public: 	
-	CGoomba(float x, float y): CGameObject(x, y) {
-		this->ax = 0;
-		this->ay = GOOMBA_GRAVITY;
+	CGoomba(float x, float y): CGameObject(OBJECT_TYPE_GOOMBA, x, y) {
+		ay = GOOMBA_GRAVITY;
 		die_start = -1;
 		SetState(GOOMBA_STATE_WALKING);
 	}
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects);
 	void Render();
 	void GetBoundingBox(float &left, float &top, float &right, float &bottom);
-
 	int IsCollidable() { return 1; };
 	int IsBlocking() { return 0; }
 	void OnNoCollision(DWORD dt);

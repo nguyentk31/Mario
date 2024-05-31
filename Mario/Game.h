@@ -52,7 +52,7 @@ class CGame
 	ID3D10SamplerState* pPointSamplerState;
 
 	std::unordered_map<int, LPSCENE> scenes;
-	int current_scene;
+	int current_scene = -1;
 	int next_scene = -1;
 
 	void _ParseSection_SETTINGS(std::string line);
