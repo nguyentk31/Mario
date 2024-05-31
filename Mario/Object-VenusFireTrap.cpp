@@ -114,11 +114,28 @@ void CVenusFireTrap::GetFireballVxVy(float mario_x, float mario_y, float &vx, fl
 	// calculate the angle between the plant and mario
 	float dx = mario_x - x;
 	float dy = mario_y - y;
-	float angle = atan2(dy, dx);
+	float angle = atan2(dx, dy);
+	DebugOut(L"angle: %f\n", angle);
 
-	// calculate the velocity of the fireball
-	vx = FIREBALL_SPEED * cos(angle);
-	vy = FIREBALL_SPEED * sin(angle);
+	// Define allowed angles (8 directions, 4 left and 4 right)
+	const float allowed_angles[] = {
+		+ M_PI / 4.0f,
+		+ 2 * M_PI / 4.0f,
+		+ 3 * M_PI / 4.0f,
+		+ 4 * M_PI / 4.0f,
+		- M_PI / 4.0f,
+		- 2 * M_PI / 4.0f,
+		- 3 * M_PI / 4.0f,
+		- 4 * M_PI / 4.0f
+	};
+
+	// Find the closest angle in the allowed angles
+	float closest_angle = *min_element(allowed_angles, allowed_angles + sizeof(allowed_angles) / sizeof(allowed_angles[0]),
+		[angle](float a1, float a2) { return abs(a1 - angle) < abs(a2 - angle); });
+
+	// Calculate vx and vy using the closest angle
+	vx = FIREBALL_SPEED * sin(closest_angle);
+	vy = FIREBALL_SPEED * cos(closest_angle);
 }
 
 void CVenusFireTrap::Render()

@@ -19,6 +19,8 @@
 #define ATTACT_ZONE_MIN 32
 #define ATTACT_ZONE_MAX 128
 
+# define M_PI 3.14159265358979323846f
+
 class CVenusFireTrap : public CGameObject
 {
 protected:
