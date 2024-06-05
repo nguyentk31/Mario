@@ -37,7 +37,15 @@ public:
 	void SetPosition(float x, float y) { this->x = x, this->y = y; }
 	void SetSpeed(float vx, float vy) { this->vx = vx, this->vy = vy; }
 	void GetPosition(float &x, float &y) { x = this->x; y = this->y; }
+	float GetX() { return x; }
+	void SetX(float x) { this->x = x; }
+	float GetY() { return y; }
+	void SetY(float y) { this->y = y; }
 	void GetSpeed(float &vx, float &vy) { vx = this->vx; vy = this->vy; }
+	float GetVx() { return vx; }
+	void SetVx(float vx) { this->vx = vx; }
+	float GetVy() { return vy; }
+	void SetVy(float vy) { this->vy = vy; }
 
 	int GetObjectTypeID() { return objectTypeID; }
 
@@ -67,8 +75,11 @@ public:
 	virtual void OnNoCollision(DWORD dt) {};
 
 	// When collision with an object has been detected (triggered by CCollision::Process)
-	virtual void OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt) {};
+	virtual void OnCollisionWith(vector<LPCOLLISIONEVENT> events) {};
 	
+	// When overlapse with other objects
+	virtual void OnOverlapseWith(vector<LPCOLLISIONEVENT> events) {};
+
 	// Is this object blocking other object? If YES, collision framework will automatically push the other object
 	virtual int IsBlocking() { return 1; }
 

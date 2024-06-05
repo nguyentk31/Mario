@@ -22,10 +22,16 @@ void CKoopaTroopa::OnNoCollision(DWORD dt)
 {
 	x += vx * dt;
 	y += vy * dt;
-};
+}
 
-void CKoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
+void CKoopaTroopa::OnOverlapseWith(vector<LPCOLLISIONEVENT> evnets) {
+	if (state == KOOPA_TROOPA_STATE_WALKING && evnets[0]->obj->IsBlocking())
+		SetState(KOOPA_TROOPA_STATE_DIE);
+}
+
+void CKoopaTroopa::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 {
+	LPCOLLISIONEVENT e = events[0];
 	if (e->obj->IsBlocking()) {
 		if (e->ny != 0 )
 			vy = 0;
@@ -49,13 +55,6 @@ void CKoopaTroopa::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 				SetState(KOOPA_TROOPA_STATE_DIE);
 			}
 		}
-
-		// if colision direction is the same as the direction of the object, so source was static and target was moving
-		// if colision direction is the opposite of the direction of the object, so source was moving and target was static
-		if (e->ny != 0)
-			y = (vy/e->ny) > 0 ? y : y + vy * dt;
-		else if (e->nx != 0)
-			x = (vx/e->nx) > 0 ? x : x + vx * dt;
 	}
 }
 

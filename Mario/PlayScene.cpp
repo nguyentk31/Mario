@@ -23,16 +23,17 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
 		OBJECT_TYPE_VENUS_FIRE_TRAP,
-		OBJECT_TYPE_GOOMBA,
-		OBJECT_TYPE_KOOPA_TROOPA,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_GOOMBA,
+		OBJECT_TYPE_KOOPA_TROOPA,
 		OBJECT_TYPE_FIREBALL,
 		OBJECT_TYPE_MARIO,
 	};
 	orderUpdateOfObjectsType = {
 		OBJECT_TYPE_MARIO,
+		OBJECT_TYPE_FIREBALL,
 		OBJECT_TYPE_QUESTION_BLOCK,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_BOX,
@@ -41,7 +42,6 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_GOOMBA,
 		OBJECT_TYPE_VENUS_FIRE_TRAP,
 		OBJECT_TYPE_COIN,
-		OBJECT_TYPE_FIREBALL,
 	};
 
 }
@@ -339,13 +339,6 @@ void CPlayScene::Update(DWORD dt)
 		obj->Update(dt, &updateObjects);
 		i--;
 	}
-
-	// Sort question blocks if needed
-	if (QuestionBlocksStateChanged)
-	{
-		SortQuestionBlocks();
-		QuestionBlocksStateChanged = false;
-	}
 	
 	// skip the rest if scene was already unloaded (Mario::Update might trigger PlayScene::Unload)
 	if (player == NULL) return; 
@@ -369,24 +362,6 @@ void CPlayScene::Render()
 {
 	for (size_t i = 0; i < orderRenderOfObjects.size(); i++)
 		objects[orderRenderOfObjects[i]]->Render();
-}
-
-void CPlayScene::SortQuestionBlocks()
-{
-	// Sort question blocks by state
-	auto question_blocks = find_if(orderUpdateOfObjects.begin(), orderUpdateOfObjects.end(), [this](int i) {
-		return (objects[i]->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK);
-	});
-
-	sort(question_blocks, question_blocks + numbersOfObjectsForEachType[OBJECT_TYPE_QUESTION_BLOCK], [this](int a, int b) {
-		CQuestionBlock* qa = dynamic_cast<CQuestionBlock*>(objects[a]);
-		CQuestionBlock* qb = dynamic_cast<CQuestionBlock*>(objects[b]);
-		if (qa && qb) {
-			if (qa->GetState() == QUESTION_BLOCK_STATE_ALIVE && qb->GetState() != QUESTION_BLOCK_STATE_ALIVE)
-				return true;
-		}
-		return false;
-	});
 }
 
 // Add new object to current scene
@@ -504,9 +479,6 @@ void CPlayScene::PurgeDeletedObjects()
 
 	if (deletedIndices.size() == 0)
 		return;
-
-	DebugOut(L"[INFO] Purge %d objects\n", deletedIndices.size());
-
 	
 	// NOTE: remove_if will swap all deleted items to the end of the vector
 	// then simply trim the vector, this is much more efficient than deleting individual items

@@ -29,10 +29,6 @@ protected:
 	vector<int> orderUpdateOfObjectsType;
 	vector<int> orderUpdateOfObjects;
 
-	// Sort question blocks by state
-	bool QuestionBlocksStateChanged = false;
-	void SortQuestionBlocks();
-
 	void _ParseSection_SPRITES(string line);
 	void _ParseSection_ANIMATIONS(string line);
 
@@ -50,8 +46,6 @@ public:
 	virtual void Unload();
 	// Add new object to the current scene
 	void AddObject(LPGAMEOBJECT obj);
-	// Sort question blocks
-	void QBLockStateChanged() { QuestionBlocksStateChanged = true; }
 
 	LPGAMEOBJECT GetPlayer() { return player; }
 

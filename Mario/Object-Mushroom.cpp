@@ -20,16 +20,14 @@ void CMushroom::OnNoCollision(DWORD dt)
 	y += vy * dt;
 };
 
-void CMushroom::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
+void CMushroom::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 {
-	if (!e->obj->IsBlocking()) return;
-	if (e->ny != 0 )
-	{
-		vy = 0;
-	}
-	else if (e->nx != 0)
-	{
-		vx = -vx;
+	LPCOLLISIONEVENT e = events[0];
+	if (e->obj->IsBlocking()) {
+		if (e->ny != 0 )
+			vy = 0;
+		else if (e->nx != 0)
+			vx = -vx;
 	}
 }
 

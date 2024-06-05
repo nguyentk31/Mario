@@ -71,11 +71,10 @@ public:
 		DWORD dt, 
 		vector<LPGAMEOBJECT>* objDests,
 		vector<bool>& processedFlags, 
-		LPCOLLISIONEVENT& firstColEvent,
-		int& colEventIndex);
+		vector<LPCOLLISIONEVENT>& firstColEvts);
 
 	void Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* coObjects);
-	void CollisionWithObject(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent);
+	void CollisionWithObject(LPGAMEOBJECT objSrc, DWORD dt, vector<LPCOLLISIONEVENT> colEvents);
 
 	static CCollision* GetInstance();
 };

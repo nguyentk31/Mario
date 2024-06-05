@@ -140,12 +140,12 @@ class CMario : public CGameObject
 	bool holdingShell;
 	LPKOOPATROOPA shell;
 
-	void OnCollisionWithGoomba(LPCOLLISIONEVENT e, DWORD dt);
-	void OnCollisionWithCoin(LPCOLLISIONEVENT e, DWORD dt);
-	void OnCollisionWithPortal(LPCOLLISIONEVENT e, DWORD dt);
-	void OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e, DWORD dt);
-	void OnCollisionWithMushroom(LPCOLLISIONEVENT e, DWORD dt);
-	void OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt);
+	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);
+	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
+	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
+	void OnCollisionWithQuestionBlock(vector<LPCOLLISIONEVENT> events);
+	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -184,7 +184,8 @@ public:
 	int IsBlocking() { return (state != MARIO_STATE_DIE && untouchable==0); }
 
 	void OnNoCollision(DWORD dt);
-	void OnCollisionWith(LPCOLLISIONEVENT e , DWORD dt);
+	void OnCollisionWith(vector<LPCOLLISIONEVENT> events);
+	void OnOverlapseWith(vector<LPCOLLISIONEVENT> events) {};
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }

@@ -5,7 +5,7 @@
 
 #define BLOCK_PUSH_FACTOR 0.4f
 
-int CCollisionEvent::WasCollided() { return t >= 0.0f && t <= 1.0f && obj->IsDirectionColliable(nx, ny)==1; }
+int CCollisionEvent::WasCollided() { return ( nx == 1 && ny == 1 || t >= 0.0f && t <= 1.0f ) && obj->IsDirectionColliable(nx, ny)==1; }
 
 CCollision* CCollision::__instance = NULL;
 
@@ -42,6 +42,13 @@ void CCollision::SweptAABB(
 
 	t = -1.0f;			// no collision
 	nx = ny = 0;
+
+	// Check if two objects are intersecting before moving
+	if (ml < sr && mr > sl && mt < sb && mb > st) {
+		nx = ny = 1;
+		t = -1;
+		return;
+	}
 
 	//
 	// Broad-phase test 
@@ -114,7 +121,7 @@ void CCollision::SweptAABB(
 
 	if (tx_entry > ty_entry)
 	{
-		ny = 0.0f;
+	;	ny = 0.0f;
 		dx > 0 ? nx = -1.0f : nx = 1.0f;
 	}
 	else
@@ -171,90 +178,103 @@ LPCOLLISIONEVENT CCollision::SweptAABB(LPGAMEOBJECT objSrc, DWORD dt, LPGAMEOBJE
 	coObjects: the list of colliable objects
 	coEvents: list of potential collisions
 */
-void CCollision::Scan(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* objDests, vector<bool>& processedFlags, LPCOLLISIONEVENT& firstColEvt, int& colEventIndex)
+void CCollision::Scan(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* objDests, vector<bool>& processedFlags, vector<LPCOLLISIONEVENT>& firstColEvts)
 {
-	vector<pair<LPCOLLISIONEVENT, int>> coEvtWithIndex;
-	int coEvtIndex = 0;
+	// Collision event with objDests index;
+	vector<pair<LPCOLLISIONEVENT, UINT>> coEvtWithIndex;
 
 	for (UINT i = 0; i < objDests->size(); i++)
 	{
-		if (processedFlags[i]) continue;
-		// skip deleted objects
-		if (objDests->at(i)->IsDeleted()) {
-			processedFlags[i] = true;
-			continue;	
-		}
-
+		// skip deleted objects or processed objects
+		if (objDests->at(i)->IsDeleted() || processedFlags[i]) continue;
 		
 		LPCOLLISIONEVENT e = SweptAABB(objSrc, dt, objDests->at(i));
 		if (e->WasCollided()==1)
-			coEvtWithIndex.push_back(make_pair(e, coEvtIndex++));
+			coEvtWithIndex.push_back(make_pair(e, i));
 		else
 			delete e;
 	}
 
 	if (coEvtWithIndex.size() == 0)
-	{
-		firstColEvt = NULL;
-		colEventIndex = -1;
 		return;
-	}
 
+	// Sort events base on t, minimum first
 	sort(coEvtWithIndex.begin(), coEvtWithIndex.end(), [](const auto& a, const auto& b) {
     		return CCollisionEvent::compare(a.first, b.first);
 	});
-	firstColEvt = coEvtWithIndex[0].first;
-	colEventIndex = coEvtWithIndex[0].second;
 
+	// Get all first events that have the same t and the same object type
+	float firsttime = coEvtWithIndex[0].first->t;
+	float firstnx = coEvtWithIndex[0].first->nx;
+	float firstny = coEvtWithIndex[0].first->ny;
+	int firsttype = coEvtWithIndex[0].first->obj->GetObjectTypeID();
+
+	for (UINT i = 0; i < coEvtWithIndex.size(); i++) {
+		if (coEvtWithIndex[i].first->t == firsttime &&
+		coEvtWithIndex[i].first->nx == firstnx &&
+		coEvtWithIndex[i].first->ny == firstny &&
+		coEvtWithIndex[i].first->obj->GetObjectTypeID() == firsttype) {
+			firstColEvts.push_back(coEvtWithIndex[i].first);
+			processedFlags[coEvtWithIndex[i].second] = true;
+		}
+		else
+			delete coEvtWithIndex[i].first;
+
+	}
 }
 
 void CCollision::Process(LPGAMEOBJECT objSrc, DWORD dt, vector<LPGAMEOBJECT>* coObjects)
 {
 	vector<bool> processedFlags(coObjects->size(), false);
-	LPCOLLISIONEVENT firstCol = NULL;
-	int colEventIndex;
+	vector<LPCOLLISIONEVENT> firstCols;
+	bool colX, colY;
+	colX = colY = false;
 
 	for (UINT i = 0; i < coObjects->size(); i++)
 	{
-		Scan(objSrc, dt, coObjects, processedFlags, firstCol, colEventIndex);
+		Scan(objSrc, dt, coObjects, processedFlags, firstCols);
 
-		if (firstCol == NULL)
-		{
-			objSrc->OnNoCollision(dt);
-			return;
+		if (firstCols.size() == 0)
+			break;
+
+		if (firstCols[0]->nx == firstCols[0]->ny) {
+			DebugOut(L"Object %d overlapse with %d\n", objSrc->GetObjectTypeID(), firstCols[0]->obj->GetObjectTypeID());
+			objSrc->OnOverlapseWith(firstCols);
+		} else if (!firstCols[0]->obj->IsBlocking()) {
+			objSrc->OnCollisionWith(firstCols);
+		}
+		else {
+			if (firstCols[0]->nx != 0)
+				colX = true;
+			else
+				colY = true;
+			CollisionWithObject(objSrc, dt, firstCols);
 		}
 
-		CollisionWithObject(objSrc, dt, firstCol);
-
-		processedFlags[colEventIndex] = true;
+		for (UINT i = 0; i < firstCols.size(); i++)
+			delete firstCols[i];
+		firstCols.clear();
 	}
 
-	delete firstCol;
-
+	if (!colX && !colY)
+		objSrc->OnNoCollision(dt);
+	else if (!colX && colY)
+		objSrc->SetX(objSrc->GetX() + objSrc->GetVx() * dt);
+	else if (colX && !colY)
+		objSrc->SetY(objSrc->GetY() + objSrc->GetVy() * dt);
 }
 
-void CCollision::CollisionWithObject(LPGAMEOBJECT objSrc, DWORD dt, LPCOLLISIONEVENT colEvent)
+void CCollision::CollisionWithObject(LPGAMEOBJECT objSrc, DWORD dt, vector<LPCOLLISIONEVENT> colEvents)
 {
-	if (!colEvent->obj->IsBlocking()) {
-		objSrc->OnCollisionWith(colEvent, dt);
-		return;
-	}
-
-	float x, y, vx, vy, dx, dy;
-	objSrc->GetPosition(x, y);
+	float vx, vy, dx, dy;
 	objSrc->GetSpeed(vx, vy);
 	dx = vx * dt;
 	dy = vy * dt;
 
-	if (colEvent->nx != 0)
-	{
-		x += colEvent->t * dx + colEvent->nx * BLOCK_PUSH_FACTOR;
-	}
+	if (colEvents[0]->nx != 0)
+		objSrc->SetX(objSrc->GetX() + colEvents[0]->t * dx + colEvents[0]->nx * BLOCK_PUSH_FACTOR);
 	else
-	{
-		y += colEvent->t * dy + colEvent->ny * BLOCK_PUSH_FACTOR;
-	}
+		objSrc->SetY(objSrc->GetY() + colEvents[0]->t * dy + colEvents[0]->ny * BLOCK_PUSH_FACTOR);
 
-	objSrc->SetPosition(x, y);
-	objSrc->OnCollisionWith(colEvent, dt);
+	objSrc->OnCollisionWith(colEvents);
 }

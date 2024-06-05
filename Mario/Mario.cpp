@@ -8,7 +8,7 @@ void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
 	vx += ax * dt;
-
+	
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
 
 	// reset untouchable timer if untouchable time has passed
@@ -68,8 +68,9 @@ void CMario::OnNoCollision(DWORD dt)
 	y += vy * dt;
 }
 
-void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
+void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 {
+	LPCOLLISIONEVENT e = events[0];
 	if (e->obj->IsBlocking()) {
 		if (e->ny != 0 && e->obj->IsBlocking())
 		{
@@ -81,35 +82,28 @@ void CMario::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
 			vx = 0;
 		}
 
-		if (dynamic_cast<CQuestionBlock*>(e->obj))
-			OnCollisionWithQuestionBlock(e, dt);
+		if (e->obj->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK && e->ny > 0)
+			OnCollisionWithQuestionBlock(events);
 	} else {
 		if (dynamic_cast<CGoomba*>(e->obj))
-			OnCollisionWithGoomba(e, dt);
+			OnCollisionWithGoomba(e);
 		else if (dynamic_cast<CCoin*>(e->obj))
-			OnCollisionWithCoin(e, dt);
+			OnCollisionWithCoin(e);
 		else if (dynamic_cast<CPortal*>(e->obj))
-			OnCollisionWithPortal(e, dt);
+			OnCollisionWithPortal(e);
 		else if (dynamic_cast<CMushroom*>(e->obj))
-			OnCollisionWithMushroom(e, dt);
+			OnCollisionWithMushroom(e);
 		else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj))
 			Hit();
 		else if (dynamic_cast<CKoopaTroopa*>(e->obj))
-			OnCollisionWithKoopaTroopa(e, dt);
+			OnCollisionWithKoopaTroopa(e);
 		else if (dynamic_cast<CSponsor*>(e->obj))
 			dynamic_cast<CSponsor*>(e->obj)->SponseObject();
-		
-		// if colision direction is the same as the direction of the object, so source was static and target was moving
-		// if colision direction is the opposite of the direction of the object, so source was moving and target was static
-		if (e->ny != 0)
-			y = (vy/e->ny) > 0 ? y : y + vy * dt;
-		else if (e->nx != 0)
-			x = (vx/e->nx) > 0 ? x : x + vx * dt;
 	}
 	
 }
 
-void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt) {
+void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e) {
 	CKoopaTroopa* koopaTroopa = dynamic_cast<CKoopaTroopa*>(e->obj);
 	int koopaTroopaState = koopaTroopa->GetState();
 	switch (koopaTroopaState)
@@ -144,30 +138,34 @@ void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e, DWORD dt) {
 	}
 }
 
-void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e, DWORD dt)
+void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
 {
 	LevelUp();
 	e->obj->Delete();
 }
 
-void CMario::OnCollisionWithQuestionBlock(LPCOLLISIONEVENT e, DWORD dt)
+void CMario::OnCollisionWithQuestionBlock(vector<LPCOLLISIONEVENT> events)
 {
-	CQuestionBlock* QuestionBlock = dynamic_cast<CQuestionBlock*>(e->obj);
-	if (QuestionBlock->GetState() == QUESTION_BLOCK_STATE_ALIVE && e->ny > 0)
+	// Find the closest QuestionBlock to hit
+	float closestHitX = 9999999;
+	CQuestionBlock* QuestionBlockHit = NULL;
+	for (int i = 0; i < events.size(); i++)
 	{
-		QuestionBlock->SetState(QUESTION_BLOCK_STATE_BOUNCING);
-		if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_COIN)
-		{
-			coin++;
-		}
-		else if (QuestionBlock->GetType() == QUESTION_BLOCK_TYPE_LEVEL_ITEM)
-		{
-			QuestionBlock->SetHitX(x);
+		float xDistance = abs(x - events[i]->obj->GetX());
+		if (xDistance < closestHitX && dynamic_cast<CQuestionBlock*>(events[i]->obj)->GetState() == QUESTION_BLOCK_STATE_ALIVE) {
+			QuestionBlockHit = dynamic_cast<CQuestionBlock*>(events[i]->obj);
+			closestHitX = xDistance;
 		}
 	}
+
+	if (QuestionBlockHit == NULL) return;
+	QuestionBlockHit->Hit(x);
+
+	if (QuestionBlockHit->GetType() == QUESTION_BLOCK_TYPE_COIN)
+		coin++;
 }
 
-void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e, DWORD dt)
+void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e)
 {
 	CGoomba* goomba = dynamic_cast<CGoomba*>(e->obj);
 
@@ -189,13 +187,13 @@ void CMario::OnCollisionWithGoomba(LPCOLLISIONEVENT e, DWORD dt)
 	}
 }
 
-void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e, DWORD dt)
+void CMario::OnCollisionWithCoin(LPCOLLISIONEVENT e)
 {
 	e->obj->Delete();
 	coin++;
 }
 
-void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e, DWORD dt)
+void CMario::OnCollisionWithPortal(LPCOLLISIONEVENT e)
 {
 	CPortal* p = (CPortal*)e->obj;
 	CGame::GetInstance()->InitiateSwitchScene(p->GetSceneId());

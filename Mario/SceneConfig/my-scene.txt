@@ -154,7 +154,7 @@ Sprites_Animations/VenusFireTrap.txt
 4	1080	328
 
 # Goomba
-3	232	400
+#3	232	400
 3	500	400
 
 # KoopaTroopa
@@ -177,7 +177,7 @@ Sprites_Animations/VenusFireTrap.txt
 9	712	360	1
 
 # MARIO
-1	16	300
+1	500	300
 
 # Sponsor
 5	640	32	2	3	839	393	3	887	393

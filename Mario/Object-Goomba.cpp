@@ -19,18 +19,22 @@ void CGoomba::OnNoCollision(DWORD dt)
 	y += vy * dt;
 };
 
-void CGoomba::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt)
+void CGoomba::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 {
-	if (!e->obj->IsBlocking()) return; // Ignore if e->obj is not blocking
+	LPCOLLISIONEVENT e = events[0];
+	if (e->obj->IsBlocking()) {
+		if (e->ny != 0 )
+			vy = 0;
+		else if (e->nx != 0)
+			vx = -vx;
 
-	if (e->ny != 0 )
-	{
-		vy = 0;
+	} else {
+		if (dynamic_cast<CGoomba*>(e->obj) && e->nx != 0) {
+			e->obj->SetVx(-e->obj->GetVx());
+			vx = -vx;
+		}
 	}
-	else if (e->nx != 0)
-	{
-		vx = -vx;
-	}
+
 }
 
 void CGoomba::Render()

@@ -8,8 +8,8 @@ void CCoin::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	if (falling_period <= 0)
 		isDeleted = true;
 	else {
-		vy += ay * dt;
 		y += vy * dt;
+		vy += ay * dt;
 	}
 }
 

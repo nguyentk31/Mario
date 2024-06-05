@@ -12,10 +12,9 @@ void CQuestionBlock::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		coObjects->push_back(item);
 	}
 
-	if (vy < 0 || y < originalY ){
-		vy += ay * dt;
+	if (vy < 0 || y < originalY )
 		CCollision::GetInstance()->Process(this, dt, coObjects);
-	} else
+	else
 		SetState(QUESTION_BLOCK_STATE_DEAD);
 }
 
@@ -32,18 +31,18 @@ void CQuestionBlock::Render()
 void CQuestionBlock::OnNoCollision(DWORD dt)
 {
 	y += vy * dt;
+	vy += ay * dt;
 }
 
-void CQuestionBlock::OnCollisionWith(LPCOLLISIONEVENT e, DWORD dt) {
-	if (dynamic_cast<CMushroom*>(e->obj)) {
-		if (e->ny > 0) {
-			e->obj->SetState(MUSHROOM_STATE_BOUNCING);
-		}
-	} else if (dynamic_cast<CCoin*>(e->obj)) {
-		if (e->ny > 0) {
-			e->obj->SetState(COIN_STATE_BOUNCING);
-		}
-	} else if (dynamic_cast<CBrick*>(e->obj))
+void CQuestionBlock::OnCollisionWith(vector<LPCOLLISIONEVENT> events) {
+	if (events.size() == 0)
+		DebugOut(L"QuestionBlock has two collision events\n");
+	LPCOLLISIONEVENT e = events[0];
+	if (dynamic_cast<CMushroom*>(e->obj) && e->ny > 0)
+		e->obj->SetState(MUSHROOM_STATE_BOUNCING);
+	else if (dynamic_cast<CCoin*>(e->obj))
+		e->obj->SetState(COIN_STATE_BOUNCING);
+	else if (dynamic_cast<CBrick*>(e->obj))
 		SetState(QUESTION_BLOCK_STATE_DEAD);
 }
 
@@ -57,15 +56,19 @@ void CQuestionBlock::generateLvItem()
 {
 	int directionX = hitX>x ? -1 : 1;
 	item = new CMushroom(x, y, directionX);
-	CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	current_scene->AddObject(item);
+	((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
 }
 
 void CQuestionBlock::generateCoin()
 {
 	item = new CCoin(x, y-(QUESTION_BLOCK_SIZE+COIN_SIZE+1)/2);
-	CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-	current_scene->AddObject(item);
+	((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
+}
+
+void CQuestionBlock::Hit(float x)
+{
+	hitX = x;
+	SetState(QUESTION_BLOCK_STATE_BOUNCING);
 }
 
 void CQuestionBlock::SetState(int state)
@@ -81,12 +84,8 @@ void CQuestionBlock::SetState(int state)
 		case QUESTION_BLOCK_STATE_DEAD: 
 			vy = 0;
 			y = originalY;
-			item = NULL;
 			if (QBType == QUESTION_BLOCK_TYPE_LEVEL_ITEM)
 				generateLvItem();
-			CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
-			current_scene->QBLockStateChanged();
-			DebugOut(L"[INFO] Question block state changed\n");
 			break;
 	}
 }
