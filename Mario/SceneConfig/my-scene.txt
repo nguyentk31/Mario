@@ -155,10 +155,10 @@ Sprites_Animations/VenusFireTrap.txt
 
 # Goomba
 #3	232	400
-3	500	400
+3	500	400	1	1
 
 # KoopaTroopa
-12	584	370
+#12	584	370
 
 # Venus Fire Trap
 6	368	384
@@ -180,4 +180,5 @@ Sprites_Animations/VenusFireTrap.txt
 1	500	300
 
 # Sponsor
-5	640	32	2	3	839	393	3	887	393
+5	640	32	3	3	840	385	1	1	3	888	385	1	1	3	946	385	2	2
+

@@ -3,7 +3,16 @@
 void CGoomba::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
 	vy += ay * dt;
-
+	if (level == GOOMBA_LEVEL_FLY) {
+		if (state == GOOMBA_STATE_WALKING && GetTickCount64() - fly_start > GOOMBA_FLY_TIMEOUT)
+		{
+			SetState(GOOMBA_STATE_FLY);
+		} else if (state == GOOMBA_STATE_FLY && vy > 0)
+		{
+			SetState(GOOMBA_STATE_WALKING);
+		}
+	}
+	
 	if ( (state==GOOMBA_STATE_DIE) && (GetTickCount64() - die_start > GOOMBA_DIE_TIMEOUT) )
 	{
 		isDeleted = true;
@@ -39,11 +48,42 @@ void CGoomba::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 
 void CGoomba::Render()
 {
-	if (state == GOOMBA_STATE_DIE)
-		CAnimations::GetInstance()->Get(ID_ANI_GOOMBA_DIE)->Render(x, y);
-	else
-		CAnimations::GetInstance()->Get(ID_ANI_GOOMBA_WALK)->Render(x,y);
+	int ani = -1;
+	switch (color)
+	{
+		case GOOMBA_COLOR_RED:
+			if (state == GOOMBA_STATE_DIE)
+				ani = ID_ANI_RED_GOOMBA_DIE;
+			else
+				ani = ID_ANI_RED_GOOMBA_WALK;
+			break;
+		default:
+			if (state == GOOMBA_STATE_DIE)
+				ani = ID_ANI_BROWN_GOOMBA_DIE;
+			else
+				ani = ID_ANI_BROWN_GOOMBA_WALK;
+			break;
+	}
+	CAnimations *animations = CAnimations::GetInstance();
+	animations->Get(ani)->Render(x, y);
+	if (level == GOOMBA_LEVEL_FLY) {
+		if (state == GOOMBA_STATE_FLY || (state == GOOMBA_STATE_WALKING && GetTickCount64() - fly_start > GOOMBA_FLY_TIMEOUT - 500)) {
+			animations->Get(ID_ANI_GOOMBA_FLY_WING_LEFT)->Render(x-6, y-7);
+			animations->Get(ID_ANI_GOOMBA_FLY_WING_RIGHT)->Render(x+6, y-7);
+		} else {
+			animations->Get(ID_ANI_GOOMBA_WING_LEFT)->Render(x-6, y-7);
+			animations->Get(ID_ANI_GOOMBA_WING_RIGHT)->Render(x+6, y-7);
+		}
+	}
+}
 
+void CGoomba::HitByTop()
+{
+	if (level == GOOMBA_LEVEL_FLY) {
+		level = GOOMBA_LEVEL_NORMAL;
+	} else {
+		SetState(GOOMBA_STATE_DIE);
+	}
 }
 
 void CGoomba::SetState(int state)
@@ -59,7 +99,10 @@ void CGoomba::SetState(int state)
 			ay = 0; 
 			break;
 		case GOOMBA_STATE_WALKING: 
-			vx = -GOOMBA_WALKING_SPEED;
+			break;
+		case GOOMBA_STATE_FLY:
+			vy = -GOOMBA_FLY_SPEED;
+			fly_start = GetTickCount64();
 			break;
 	}
 }

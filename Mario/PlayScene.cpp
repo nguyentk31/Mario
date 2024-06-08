@@ -143,7 +143,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_GOOMBA: {
-		obj = new CGoomba(x,y); break;
+		int color = (int)atof(tokens[3].c_str());
+		int level = (int)atof(tokens[4].c_str());
+		obj = new CGoomba(x,y, color, level);
 		break;
 	}
 	case OBJECT_TYPE_COIN: 
@@ -207,16 +209,13 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	{
 		int num_objects = atoi(tokens[3].c_str());
 		vector<int> objects_type;
-		vector<vector<float>> objects_position;
+		vector<vector<double>> objects_properties;
 		for (int i = 0; i < num_objects; i++)
 		{
-			int type = atoi(tokens[4 + i * 3].c_str());
-			float x = (float)atof(tokens[5 + i * 3].c_str());
-			float y = (float)atof(tokens[6 + i * 3].c_str());
-			objects_type.push_back(type);
-			objects_position.push_back({ x, y });
+			objects_type.push_back(atoi(tokens[4 + i * 5].c_str()));
+			objects_properties.push_back({ atof(tokens[5 + i * 5].c_str()), atof(tokens[6 + i * 5].c_str()), atof(tokens[7 + i * 5].c_str()), atof(tokens[8 + i * 5].c_str()) });
 		}
-		obj = new CSponsor(x, y, objects_type, objects_position);
+		obj = new CSponsor(x, y, objects_type, objects_properties);
 		break;
 	}
 
