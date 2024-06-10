@@ -91,8 +91,8 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 			OnCollisionWithCoin(e);
 		else if (dynamic_cast<CPortal*>(e->obj))
 			OnCollisionWithPortal(e);
-		else if (dynamic_cast<CMushroom*>(e->obj))
-			OnCollisionWithMushroom(e);
+		else if (dynamic_cast<CMushroom*>(e->obj) || dynamic_cast<CLeaf*>(e->obj))
+			OnCollisionWithLevelItems(e);
 		else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj))
 			Hit();
 		else if (dynamic_cast<CKoopaTroopa*>(e->obj))
@@ -138,7 +138,7 @@ void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e) {
 	}
 }
 
-void CMario::OnCollisionWithMushroom(LPCOLLISIONEVENT e)
+void CMario::OnCollisionWithLevelItems(LPCOLLISIONEVENT e)
 {
 	LevelUp();
 	e->obj->Delete();
@@ -214,9 +214,9 @@ void CMario::LevelUp()
 	case MARIO_LEVEL_SMALL:
 		SetLevel(MARIO_LEVEL_BIG);
 		break;
-	// case MARIO_LEVEL_BIG:
-	// 	SetLevel(MARIO_LEVEL_RACOON);
-	// 	break;
+	case MARIO_LEVEL_BIG:
+		SetLevel(MARIO_LEVEL_RACCOON);
+		break;
 	}
 }
 
@@ -224,9 +224,9 @@ void CMario::LevelDown()
 {
 	switch (level)
 	{
-	// case MARIO_LEVEL_RACOON:
-	// 	SetLevel(MARIO_LEVEL_BIG);
-	// 	break;
+	case MARIO_LEVEL_RACCOON:
+		SetLevel(MARIO_LEVEL_BIG);
+		break;
 	case MARIO_LEVEL_BIG:
 		SetLevel(MARIO_LEVEL_SMALL);
 		break;
@@ -360,6 +360,64 @@ int CMario::GetAniIdBig()
 	return aniId;
 }
 
+int CMario::GetAniIdRaccoon()
+{
+	int aniId = -1;
+	if (!isOnPlatform)
+	{
+		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_LEFT;
+		}
+		else
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_RACCOON_JUMP_WALK_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_RACCOON_JUMP_WALK_LEFT;
+		}
+	}
+	else
+		if (isSitting)
+		{
+			if (nx > 0)
+				aniId = ID_ANI_MARIO_RACCOON_SIT_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_RACCOON_SIT_LEFT;
+		}
+		else
+			if (vx == 0)
+			{
+				if (nx > 0) aniId = ID_ANI_MARIO_RACCOON_IDLE_RIGHT;
+				else aniId = ID_ANI_MARIO_RACCOON_IDLE_LEFT;
+			}
+			else if (vx > 0)
+			{
+				if (ax < 0)
+					aniId = ID_ANI_MARIO_RACCOON_BRACE_RIGHT;
+				else if (ax == MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_RACCOON_RUNNING_RIGHT;
+				else if (ax == MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_RACCOON_WALKING_RIGHT;
+			}
+			else // vx < 0
+			{
+				if (ax > 0)
+					aniId = ID_ANI_MARIO_RACCOON_BRACE_LEFT;
+				else if (ax == -MARIO_ACCEL_RUN_X)
+					aniId = ID_ANI_MARIO_RACCOON_RUNNING_LEFT;
+				else if (ax == -MARIO_ACCEL_WALK_X)
+					aniId = ID_ANI_MARIO_RACCOON_WALKING_LEFT;
+			}
+
+	if (aniId == -1) aniId = ID_ANI_MARIO_RACCOON_IDLE_RIGHT;
+
+	return aniId;
+}
+
 void CMario::Render()
 {
 	CAnimations* animations = CAnimations::GetInstance();
@@ -371,6 +429,8 @@ void CMario::Render()
 		aniId = GetAniIdBig();
 	else if (level == MARIO_LEVEL_SMALL)
 		aniId = GetAniIdSmall();
+	else if (level == MARIO_LEVEL_RACCOON)
+		aniId = GetAniIdRaccoon();
 
 	animations->Get(aniId)->Render(x, y);
 
@@ -473,7 +533,7 @@ void CMario::SetState(int state)
 
 void CMario::GetBoundingBox(float &left, float &top, float &right, float &bottom)
 {
-	if (level==MARIO_LEVEL_BIG)
+	if (level==MARIO_LEVEL_BIG || level==MARIO_LEVEL_RACCOON)
 	{
 		if (isSitting)
 		{
@@ -504,6 +564,8 @@ void CMario::SetLevel(int l)
 	// Adjust position to avoid falling off platform
 	switch (l)
 	{
+	case MARIO_LEVEL_RACCOON:
+		break;
 	case MARIO_LEVEL_BIG:
 		if (level == MARIO_LEVEL_SMALL)
 			y -= (MARIO_BIG_BBOX_HEIGHT - MARIO_SMALL_BBOX_HEIGHT) / 2;

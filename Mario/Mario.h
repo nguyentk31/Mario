@@ -9,6 +9,7 @@
 #include "Object-Fireball.h"
 #include "Object-Goomba.h"
 #include "Object-KoopaTroopa.h"
+#include "Object-Leaf.h"
 #include "Object-Mushroom.h"
 #include "Object-QuestionBlock.h"
 #include "Object-VenusFireTrap.h"
@@ -51,6 +52,7 @@
 
 #pragma region ANIMATION_ID
 
+// BIG MARIO
 #define ID_ANI_MARIO_IDLE_RIGHT 400
 #define ID_ANI_MARIO_IDLE_LEFT 401
 
@@ -99,6 +101,34 @@
 #define ID_ANI_MARIO_SMALL_KICK_RIGHT 1700
 #define ID_ANI_MARIO_SMALL_KICK_LEFT 1701
 
+// RACCOON MARIO
+#define ID_ANI_MARIO_RACCOON_IDLE_RIGHT 2100
+#define ID_ANI_MARIO_RACCOON_IDLE_LEFT 2101
+
+#define ID_ANI_MARIO_RACCOON_WALKING_RIGHT 2200
+#define ID_ANI_MARIO_RACCOON_WALKING_LEFT 2201
+
+#define ID_ANI_MARIO_RACCOON_RUNNING_RIGHT 2300
+#define ID_ANI_MARIO_RACCOON_RUNNING_LEFT 2301
+
+#define ID_ANI_MARIO_RACCOON_JUMP_WALK_RIGHT 2400
+#define ID_ANI_MARIO_RACCOON_JUMP_WALK_LEFT 2401
+
+#define ID_ANI_MARIO_RACCOON_JUMP_RUN_RIGHT 2500
+#define ID_ANI_MARIO_RACCOON_JUMP_RUN_LEFT 2501
+
+#define ID_ANI_MARIO_RACCOON_SIT_RIGHT 2600
+#define ID_ANI_MARIO_RACCOON_SIT_LEFT 2601
+
+#define ID_ANI_MARIO_RACCOON_BRACE_RIGHT 2700
+#define ID_ANI_MARIO_RACCOON_BRACE_LEFT 2701
+
+#define ID_ANI_MARIO_RACCOON_KICK_RIGHT 2800
+#define ID_ANI_MARIO_RACCOON_KICK_LEFT 2801
+
+#define ID_ANI_MARIO_RACCOON_FLY_RIGHT 2900
+#define ID_ANI_MARIO_RACCOON_FLY_LEFT 2901
+
 #pragma endregion
 
 #define GROUND_Y 160.0f
@@ -144,11 +174,12 @@ class CMario : public CGameObject
 	void OnCollisionWithCoin(LPCOLLISIONEVENT e);
 	void OnCollisionWithPortal(LPCOLLISIONEVENT e);
 	void OnCollisionWithQuestionBlock(vector<LPCOLLISIONEVENT> events);
-	void OnCollisionWithMushroom(LPCOLLISIONEVENT e);
+	void OnCollisionWithLevelItems(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
+	int GetAniIdRaccoon();
 	void LevelDown();
 	void HoldShell();
 
