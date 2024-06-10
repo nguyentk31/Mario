@@ -7,6 +7,7 @@ Sprites_Animations/Coin.txt
 Sprites_Animations/Fireball.txt
 Sprites_Animations/Goomba.txt
 Sprites_Animations/KoopaTroopa.txt
+Sprites_Animations/Leaf.txt
 Sprites_Animations/Mario.txt
 Sprites_Animations/Mushroom.txt
 Sprites_Animations/QuestionBlock.txt
@@ -155,10 +156,10 @@ Sprites_Animations/VenusFireTrap.txt
 
 # Goomba
 #3	232	400
-3	500	400	1	1
+#3	500	400	1	1
 
 # KoopaTroopa
-#12	584	370
+12	584	370
 
 # Venus Fire Trap
 6	368	384

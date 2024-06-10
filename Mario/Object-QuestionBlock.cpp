@@ -2,6 +2,7 @@
 #include "Object-Coin.h"
 #include "Object-Mushroom.h"
 #include "Object-Brick.h"
+#include "Object-Leaf.h"
 #include "PlayScene.h"
 #include "debug.h"
 
@@ -54,9 +55,16 @@ int CQuestionBlock::IsCollidable()
 // Generate a coin or leaf or mushroom
 void CQuestionBlock::generateLvItem()
 {
-	int directionX = hitX>x ? -1 : 1;
-	item = new CMushroom(x, y, directionX);
-	((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
+	CMario* mario = (CMario*)((LPPLAYSCENE)CGame::GetInstance()->GetCurrentScene())->GetPlayer();
+	int level = mario->GetLevel();
+	if (level == MARIO_LEVEL_SMALL) {
+		int directionX = hitX>x ? -1 : 1;
+		item = new CMushroom(x, y, directionX);
+		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
+	} else {
+		item = new CLeaf(x, y);
+		((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(item);
+	}
 }
 
 void CQuestionBlock::generateCoin()
