@@ -14,5 +14,8 @@
 22300	69	52	84	67	30
 22400	86	52	101	67	30
 
+# Brick
+23100	1004	18	1019	33	30
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
