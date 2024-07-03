@@ -273,7 +273,7 @@ Sprites_Animations/VenusFireTrap.txt
 
 # KoopaTroopa
 #12	584	370
-12	1430	280	1	2
+12	1430	280	2	2
 
 # Venus Fire Trap
 #6	368	384

@@ -27,6 +27,9 @@
 #define KOOPA_TROOPA_LEVEL_NORMAL 1
 #define KOOPA_TROOPA_LEVEL_FLY 2
 
+#define KOOPA_TROOPA_COLOR_BROWN 1
+#define KOOPA_TROOPA_COLOR_GREEN 2
+
 class CKoopaTroopa : public CGameObject
 {
 protected:

@@ -138,8 +138,11 @@ void CKoopaTroopa::Render()
 			ani = ID_ANI_KOOPA_TROOPA_REVIVE;
 			break;
 	}
-	if (ani != -1)
+	if (ani != -1) {
+		if (color == KOOPA_TROOPA_COLOR_GREEN)
+			ani+=1;
 		CAnimations::GetInstance()->Get(ani)->Render(x, y);
+	}
 }
 
 void CKoopaTroopa::SetState(int state)
