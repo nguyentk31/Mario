@@ -110,6 +110,14 @@ void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e) {
 	{
 	case KOOPA_TROOPA_STATE_DIE:
 		break;
+	case KOOPA_TROOPA_STATE_JUMPING:
+		if (e->ny < 0) {
+			koopaTroopa->SetState(KOOPA_TROOPA_STATE_WALKING);
+			vy = -MARIO_JUMP_DEFLECT_SPEED;
+		}
+		else
+			Hit();
+		break;
 	case KOOPA_TROOPA_STATE_WALKING:
 		if (e->ny < 0) {
 			koopaTroopa->SetState(KOOPA_TROOPA_STATE_SHELL);

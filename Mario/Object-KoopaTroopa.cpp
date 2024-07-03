@@ -40,6 +40,8 @@ void CKoopaTroopa::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 
 		if (state == KOOPA_TROOPA_STATE_ROLLING && dynamic_cast<CQuestionBlock*>(e->obj))
 			e->obj->SetState(QUESTION_BLOCK_STATE_BOUNCING);
+		else if (state == KOOPA_TROOPA_STATE_JUMPING && e->ny < 0)
+			vy = -KOOPA_TROPPA_JUMPING_SPEED;
 	} else {
 		if (state == KOOPA_TROOPA_STATE_ROLLING) {
 			if (dynamic_cast<CGoomba*>(e->obj) && e->obj->GetState() != GOOMBA_STATE_DIE)
@@ -67,8 +69,9 @@ void CKoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 		SetState(KOOPA_TROOPA_STATE_REVIVE);
 	else if (state == KOOPA_TROOPA_STATE_REVIVE && GetTickCount64() - revive_start > KOOPA_TROOPA_STATE_REVIVE_TIMEOUT)
 		SetState(KOOPA_TROOPA_STATE_WALKING);
-	else if (state == KOOPA_TROOPA_STATE_ROLLING || state == KOOPA_TROOPA_STATE_WALKING) {
+	else if (state == KOOPA_TROOPA_STATE_ROLLING || state == KOOPA_TROOPA_STATE_WALKING || state == KOOPA_TROOPA_STATE_JUMPING || state == KOOPA_TROOPA_STATE_DIE) {
 		vy += ay * dt;
+		
 		if (state == KOOPA_TROOPA_STATE_WALKING) {
 			// Check whether present Koopa Troopa will falling or not
 			CKoopaTroopa *presentKoopaTroopa = new CKoopaTroopa(x, y);
@@ -104,18 +107,20 @@ void CKoopaTroopa::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 			int i = 0;
 			return;
 		}
-	} else if (state == KOOPA_TROOPA_STATE_DIE) {
-		vy += ay * dt;
 	}
 	CCollision::GetInstance()->Process(this, dt, coObjects);
 }
-
 
 void CKoopaTroopa::Render()
 {
 	int ani = -1;
 	switch (state)
 	{
+		case KOOPA_TROOPA_STATE_JUMPING:
+			if (vx > 0)
+				CAnimations::GetInstance()->Get(ID_ANI_GOOMBA_FLY_WING_LEFT)->Render(x-6, y-8);
+			else
+				CAnimations::GetInstance()->Get(ID_ANI_GOOMBA_FLY_WING_RIGHT)->Render(x+6, y-8);
 		case KOOPA_TROOPA_STATE_WALKING:
 			if (vx > 0)
 				ani = ID_ANI_KOOPA_TROOPA_WALKING_RIGHT;
@@ -141,6 +146,10 @@ void CKoopaTroopa::SetState(int state)
 {
 	switch (state)
 	{
+		case KOOPA_TROOPA_STATE_JUMPING:
+			vx = -KOOPA_TROOPA_WALKING_SPEED;
+			vy = 0;
+			break;
 		case KOOPA_TROOPA_STATE_WALKING:
 			// if Mario is holding shell then Koopa Troopa will only change state then Mario will update the state later
 			if (isOnHold)

@@ -196,7 +196,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	
 	}
 	case OBJECT_TYPE_KOOPA_TROOPA: {
-		obj = new CKoopaTroopa(x, y);
+		int color = (int)atof(tokens[3].c_str());
+		int level = (int)atof(tokens[4].c_str());
+		obj = new CKoopaTroopa(x, y, color, level);
 		break;
 	}
 	case OBJECT_TYPE_PORTAL:
