@@ -191,7 +191,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		break;
 	}
 	case OBJECT_TYPE_VENUS_FIRE_TRAP: {
-		obj = new CVenusFireTrap(x, y);
+		int color = (int)atof(tokens[3].c_str());
+		float rising_distance = (float)atof(tokens[4].c_str());
+		obj = new CVenusFireTrap(x, y, color, rising_distance);
 		break;
 	
 	}

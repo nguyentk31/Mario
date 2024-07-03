@@ -19,19 +19,26 @@
 #define ATTACT_ZONE_MIN 32
 #define ATTACT_ZONE_MAX 128
 
+#define VFT_COLOR_RED 1
+#define VFT_COLOR_GREEN 2
+
 # define M_PI 3.14159265358979323846f
 
 class CVenusFireTrap : public CGameObject
 {
 protected:
 	float start_y;
+	int color;
+	float rising_distance;
 	ULONGLONG last_hide, aiming_start, shooting_start;
 
 	int GetAnimationOrSprite(float mario_x, float mario_y);
 	void ShootFireball(float mario_x, float mario_y);
 	void GetFireballVxVy(float mario_x, float mario_y, float &vx, float &vy);
 public: 
-	CVenusFireTrap(float x, float y) :CGameObject(OBJECT_TYPE_VENUS_FIRE_TRAP, x, y) {
+	CVenusFireTrap(float x, float y, int cl, float rd) :CGameObject(OBJECT_TYPE_VENUS_FIRE_TRAP, x, y) {
+		color = cl;
+		rising_distance = rd;
 		this->start_y = y;
 		this->state = VFT_STATE_HIDE;
 		this->last_hide = GetTickCount();

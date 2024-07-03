@@ -273,10 +273,11 @@ Sprites_Animations/VenusFireTrap.txt
 
 # KoopaTroopa
 #12	584	370
-12	1430	280	2	2
+#12	1430	280	2	2
 
 # Venus Fire Trap
-#6	368	384
+#6	368	384	1	32
+#6	1872	384	2	24
 
 # QuestionBlock
 9	184	360	1
@@ -294,7 +295,7 @@ Sprites_Animations/VenusFireTrap.txt
 9	1480	376	2
 
 # MARIO
-1	1450	300
+1	1800	300
 
 # Sponsor
 #5	640	32	3	3	840	385	1	1	3	888	385	1	1	3	946	385	2	2

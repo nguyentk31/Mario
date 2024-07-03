@@ -25,11 +25,11 @@ void CVenusFireTrap::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 	}
 	else if ( state == VFT_STATE_RISING )
 	{
-		if ( y > start_y - VFT_HEIGHT )
+		if ( y > start_y - rising_distance )
 			return;
 
 		// if mario is out of attack zone, falling immediately, else aiming
-		if ( y <= start_y - VFT_HEIGHT ) {
+		if ( y <= start_y - rising_distance ) {
 			if ( is_in_attack_zone ) {
 				SetState(VFT_STATE_AIMING);
 			}
@@ -88,7 +88,7 @@ void CVenusFireTrap::SetState(int state)
 			break;
 		case VFT_STATE_AIMING:
 			aiming_start = GetTickCount();
-			y = start_y - VFT_HEIGHT;
+			y = start_y - rising_distance;
 			vy = 0;
 			break;
 		case VFT_STATE_SHOOTING:
@@ -104,7 +104,7 @@ void CVenusFireTrap::SetState(int state)
 void CVenusFireTrap::ShootFireball(float mario_x, float mario_y) {
 	float fireball_vx, fireball_vy;
 	GetFireballVxVy(mario_x, mario_y, fireball_vx, fireball_vy);
-	CFireball* fireball = new CFireball(x, y-VFT_HEIGHT/4, fireball_vx, fireball_vy);
+	CFireball* fireball = new CFireball(x, y-rising_distance/4, fireball_vx, fireball_vy);
 	CPlayScene* current_scene = (CPlayScene*)CGame::GetInstance()->GetCurrentScene();
 	current_scene->AddObject(fireball);
 }
@@ -113,7 +113,7 @@ void CVenusFireTrap::GetFireballVxVy(float mario_x, float mario_y, float &vx, fl
 {
 	// calculate the angle between the plant and mario
 	float dx = mario_x - x;
-	float dy = mario_y - y;
+	float dy = mario_y - (y-rising_distance/4);
 	float angle = atan2(abs(dx), abs(dy)); // angle in radian
 
 	// Define allowed angles (8 directions, 4 left and 4 right)
@@ -137,6 +137,8 @@ void CVenusFireTrap::Render()
 	float mario_x, mario_y;
 	mario->GetPosition(mario_x, mario_y);
 	int ani_spr_id = GetAnimationOrSprite(mario_x, mario_y);
+	if (color == VFT_COLOR_GREEN)
+		ani_spr_id += 1;
 	switch (state)
 	{
 		case VFT_STATE_RISING:
