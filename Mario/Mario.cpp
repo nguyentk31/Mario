@@ -170,6 +170,8 @@ void CMario::OnCollisionWithBreakableBrick(vector<LPCOLLISIONEVENT> events) {
 		brickHit->Hit();
 	} else {
 		for (auto& event : events) {
+			if (event->obj->GetState() == BB_STATE_COIN)
+				coin++;
 			dynamic_cast<CBreakableBrick*>(event->obj)->Hit();
 		}	
 	}
