@@ -28,7 +28,7 @@ protected:
 	float rising_distance;
 	ULONGLONG last_hide, holding_start;
 public:
-	CPtooie(float x, float y, int cl, float rd) :CGameObject(OBJECT_TYPE_VENUS_FIRE_TRAP, x, y) {
+	CPtooie(float x, float y, int cl, float rd) :CGameObject(OBJECT_TYPE_PTOOIE, x, y) {
 		color = cl;
 		rising_distance = rd;
 		this->start_y = y;
