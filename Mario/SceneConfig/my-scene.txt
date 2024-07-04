@@ -304,6 +304,9 @@ Sprites_Animations/VenusFireTrap.txt
 # BreakableBrick
 14	1992	376	1
 14	2008	376	1
+14	2024	376	1
+14	2040	376	2
+
 14	1960	408	1
 
 14	2104	392	1
@@ -311,7 +314,7 @@ Sprites_Animations/VenusFireTrap.txt
 14	2120	408	1
 
 # Switch
-15	2040	376
+#15	2040	376
 
 # MARIO
 1	2130	300

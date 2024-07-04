@@ -1,4 +1,6 @@
 #include "Object-BreakableBrick.h"
+#include "Object-Switch.h"
+#include "PlayScene.h"
 
 void CBreakableBrick::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
@@ -63,7 +65,6 @@ void CBreakableBrick::Hit()
 			SetState(BB_STATE_BROKING);
 		break;
 	case BB_STATE_COIN:
-		// UP COIN
 		isDeleted = true;
 		break;
 	}
@@ -83,7 +84,7 @@ void CBreakableBrick::SetState(int state)
 		case BB_STATE_UNBROKEN: 
 			vy = 0;
 			y = originalY;
-			// GENERATE SWITCH
+			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(new CSwitch(x, y-SWITCH_SIZE));
 			break;
 		case BB_STATE_BROKING:
 			brokingX = BB_SIZE;
