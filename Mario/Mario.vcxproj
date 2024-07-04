@@ -154,6 +154,7 @@
     <ClInclude Include="Object-Ptooie.h" />
     <ClInclude Include="Object-QuestionBlock.h" />
     <ClInclude Include="Object-Sponsor.h" />
+    <ClInclude Include="Object-Switch.h" />
     <ClInclude Include="Object-VenusFireTrap.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />
@@ -186,6 +187,7 @@
     <ClCompile Include="Object-Ptooie.cpp" />
     <ClCompile Include="Object-QuestionBlock.cpp" />
     <ClCompile Include="Object-Sponsor.cpp" />
+    <ClCompile Include="Object-Switch.cpp" />
     <ClCompile Include="Object-VenusFireTrap.cpp" />
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="Portal.cpp" />

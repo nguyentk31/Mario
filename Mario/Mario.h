@@ -16,6 +16,7 @@
 #include "Object-QuestionBlock.h"
 #include "Object-VenusFireTrap.h"
 #include "Object-Sponsor.h"
+#include "Object-Switch.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f

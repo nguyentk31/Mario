@@ -86,6 +86,8 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 			OnCollisionWithQuestionBlock(events);
 		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK && e->ny > 0)
 			dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
+		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_SWITCH && e->ny < 0)
+			e->obj->SetState(SWITCH_STATE_INACTIVE);
 	} else {
 		if (dynamic_cast<CGoomba*>(e->obj))
 			OnCollisionWithGoomba(e);

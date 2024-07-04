@@ -14,6 +14,7 @@
 #include "Object-QuestionBlock.h"
 #include "Object-VenusFireTrap.h"
 #include "Object-Ptooie.h"
+#include "Object-Switch.h"
 //#include "Koopas.h"
 
 
@@ -41,6 +42,11 @@ protected:
 	
 public: 
 	CPlayScene(int id, LPCWSTR filePath);
+
+	// Getter function to access the 'objects' vector
+	vector<LPGAMEOBJECT>& getObjects() {
+		return objects;
+    	}
 
 	virtual void Load();
 	virtual void Update(DWORD dt);

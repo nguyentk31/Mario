@@ -219,6 +219,10 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CKoopaTroopa(x, y, color, level);
 		break;
 	}
+	case OBJECT_TYPE_SWITCH: {
+		obj = new CSwitch(x, y);
+		break;
+	}
 	case OBJECT_TYPE_PORTAL:
 	{
 		float r = (float)atof(tokens[3].c_str());
