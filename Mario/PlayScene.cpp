@@ -27,6 +27,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_BREAKABLE_BRICK,
 		OBJECT_TYPE_GOOMBA,
 		OBJECT_TYPE_KOOPA_TROOPA,
 		OBJECT_TYPE_LEAF,
@@ -37,6 +38,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_MARIO,
 		OBJECT_TYPE_FIREBALL,
 		OBJECT_TYPE_QUESTION_BLOCK,
+		OBJECT_TYPE_BREAKABLE_BRICK,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
@@ -168,6 +170,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 			for (int j = 0; j < 3; j++)
 				spriteIdMap[i][j] = atoi(tokens[7 + i * 3 + j].c_str());
 		obj = new CBrick(x, y, cell_width, cell_height, lengthX, lengthY, spriteIdMap);
+		break;
+	}
+	case OBJECT_TYPE_BREAKABLE_BRICK:
+	{
+		int type = atoi(tokens[3].c_str());
+		obj = new CBreakableBrick(x, y, type);
 		break;
 	}
 	case OBJECT_TYPE_BACKGROUNDS:

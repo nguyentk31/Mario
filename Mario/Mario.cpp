@@ -84,6 +84,8 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 
 		if (e->obj->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK && e->ny > 0)
 			OnCollisionWithQuestionBlock(events);
+		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK && e->ny > 0)
+			dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
 	} else {
 		if (dynamic_cast<CGoomba*>(e->obj))
 			OnCollisionWithGoomba(e);
@@ -99,6 +101,8 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 			OnCollisionWithKoopaTroopa(e);
 		else if (dynamic_cast<CSponsor*>(e->obj))
 			dynamic_cast<CSponsor*>(e->obj)->SponseObject();
+		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK)
+			dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
 	}
 	
 }

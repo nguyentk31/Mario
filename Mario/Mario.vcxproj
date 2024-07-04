@@ -143,6 +143,7 @@
     <ClInclude Include="Mario.h" />
     <ClInclude Include="Object-Backgrounds.h" />
     <ClInclude Include="Object-Box.h" />
+    <ClInclude Include="Object-BreakableBrick.h" />
     <ClInclude Include="Object-Brick.h" />
     <ClInclude Include="Object-Coin.h" />
     <ClInclude Include="Object-Fireball.h" />
@@ -174,6 +175,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mario.cpp" />
     <ClCompile Include="Object-Box.cpp" />
+    <ClCompile Include="Object-BreakableBrick.cpp" />
     <ClCompile Include="Object-Brick.cpp" />
     <ClCompile Include="Object-Coin.cpp" />
     <ClCompile Include="Object-Fireball.cpp" />

@@ -1,4 +1,5 @@
 #include "Object-KoopaTroopa.h"
+#include "Object-BreakableBrick.h"
 #include "Object-QuestionBlock.h"
 #include "Object-Goomba.h"
 #include "Object-VenusFireTrap.h"
@@ -38,10 +39,15 @@ void CKoopaTroopa::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 		else if (e->nx != 0)
 			vx = -vx;
 
-		if (state == KOOPA_TROOPA_STATE_ROLLING && dynamic_cast<CQuestionBlock*>(e->obj))
-			e->obj->SetState(QUESTION_BLOCK_STATE_BOUNCING);
-		else if (state == KOOPA_TROOPA_STATE_JUMPING && e->ny < 0)
+		if (state == KOOPA_TROOPA_STATE_ROLLING && e->nx != 0) {
+			if (e->obj->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK)
+				e->obj->SetState(QUESTION_BLOCK_STATE_BOUNCING);
+			else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK)
+				dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
+			
+		} else if (state == KOOPA_TROOPA_STATE_JUMPING && e->ny < 0)
 			vy = -KOOPA_TROPPA_JUMPING_SPEED;
+
 	} else {
 		if (state == KOOPA_TROOPA_STATE_ROLLING) {
 			if (dynamic_cast<CGoomba*>(e->obj) && e->obj->GetState() != GOOMBA_STATE_DIE)

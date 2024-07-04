@@ -114,6 +114,9 @@
     <ClInclude Include="Object-Ptooie.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Object-BreakableBrick.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">
@@ -195,6 +198,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Object-Ptooie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Object-BreakableBrick.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

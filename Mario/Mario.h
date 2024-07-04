@@ -5,6 +5,7 @@
 #include "Animations.h"
 #include "Portal.h"
 #include "Object-Coin.h"
+#include "Object-BreakableBrick.h"
 #include "Object-Brick.h"
 #include "Object-Fireball.h"
 #include "Object-Goomba.h"

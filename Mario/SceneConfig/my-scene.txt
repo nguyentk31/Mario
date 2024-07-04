@@ -2,6 +2,7 @@
 [ASSETS]
 Sprites_Animations/Backgrounds.txt
 Sprites_Animations/Box.txt
+Sprites_Animations/BreakableBrick.txt
 Sprites_Animations/Brick.txt
 Sprites_Animations/Coin.txt
 Sprites_Animations/Fireball.txt
@@ -275,6 +276,7 @@ Sprites_Animations/VenusFireTrap.txt
 # KoopaTroopa
 #12	584	370
 #12	1430	280	2	2
+12	2104	366	1	1
 
 # Venus Fire Trap
 #6	368	384	1	32
@@ -298,8 +300,16 @@ Sprites_Animations/VenusFireTrap.txt
 
 9	1480	376	2
 
+# BreakableBrick
+14	1992	376	1
+14	1960	408	1
+
+14	2104	392	1
+14	2104	408	1
+14	2120	408	1
+
 # MARIO
-1	1744	300
+1	2130	300
 
 # Sponsor
 #5	640	32	3	3	840	385	1	1	3	888	385	1	1	3	946	385	2	2

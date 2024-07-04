@@ -6,6 +6,7 @@
 #include "Portal.h"
 #include "Object-Backgrounds.h"
 #include "Object-Box.h"
+#include "Object-BreakableBrick.h"
 #include "Object-Brick.h"
 #include "Object-Coin.h"
 #include "Object-Goomba.h"
