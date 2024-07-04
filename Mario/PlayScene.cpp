@@ -183,7 +183,9 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 	case OBJECT_TYPE_BACKGROUNDS:
 	{
 		int spriteId = atoi(tokens[3].c_str());
-		obj = new CBackgrounds(x, y, spriteId);
+		int width = atoi(tokens[4].c_str());
+		int height = atoi(tokens[5].c_str());
+		obj = new CBackgrounds(x, y, spriteId, width, height);
 		break;
 	}
 	case OBJECT_TYPE_BOX:
@@ -380,7 +382,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 224.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, 250.0f /*cy*/);
 
 	PurgeDeletedObjects();
 }
