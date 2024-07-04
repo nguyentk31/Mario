@@ -17,7 +17,7 @@ void CSwitch::SetState(int state) {
 			// Attempt to cast the object to BreakableBrick type
 			CBreakableBrick* brick = dynamic_cast<CBreakableBrick*>(obj);
 
-			if (brick != nullptr) {
+			if (brick != nullptr && brick->GetState() == BB_STATE_NORMAL) {
 				brick->SetState(BB_STATE_COIN);
 			}
 		}
