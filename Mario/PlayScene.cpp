@@ -23,6 +23,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_BOX,
 		OBJECT_TYPE_MUSHROOM,
 		OBJECT_TYPE_VENUS_FIRE_TRAP,
+		OBJECT_TYPE_PTOOIE,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_BRICK,
 		OBJECT_TYPE_QUESTION_BLOCK,
@@ -42,6 +43,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_KOOPA_TROOPA,
 		OBJECT_TYPE_GOOMBA,
 		OBJECT_TYPE_VENUS_FIRE_TRAP,
+		OBJECT_TYPE_PTOOIE,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_LEAF,
 	};
@@ -196,6 +198,12 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CVenusFireTrap(x, y, color, rising_distance);
 		break;
 	
+	}
+	case OBJECT_TYPE_PTOOIE: {
+		int color = (int)atof(tokens[3].c_str());
+		float rising_distance = (float)atof(tokens[4].c_str());
+		obj = new CPtooie(x, y, color, rising_distance);
+		break;
 	}
 	case OBJECT_TYPE_KOOPA_TROOPA: {
 		int color = (int)atof(tokens[3].c_str());

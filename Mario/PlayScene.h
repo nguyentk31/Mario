@@ -12,6 +12,7 @@
 #include "Object-KoopaTroopa.h"
 #include "Object-QuestionBlock.h"
 #include "Object-VenusFireTrap.h"
+#include "Object-Ptooie.h"
 //#include "Koopas.h"
 
 

@@ -11,6 +11,7 @@
 #include "Object-KoopaTroopa.h"
 #include "Object-Leaf.h"
 #include "Object-Mushroom.h"
+#include "Object-Ptooie.h"
 #include "Object-QuestionBlock.h"
 #include "Object-VenusFireTrap.h"
 #include "Object-Sponsor.h"

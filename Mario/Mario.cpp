@@ -93,7 +93,7 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 			OnCollisionWithPortal(e);
 		else if (dynamic_cast<CMushroom*>(e->obj) || dynamic_cast<CLeaf*>(e->obj))
 			OnCollisionWithLevelItems(e);
-		else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj))
+		else if (dynamic_cast<CVenusFireTrap*>(e->obj) || dynamic_cast<CFireball*>(e->obj) || dynamic_cast<CPtooie*>(e->obj))
 			Hit();
 		else if (dynamic_cast<CKoopaTroopa*>(e->obj))
 			OnCollisionWithKoopaTroopa(e);

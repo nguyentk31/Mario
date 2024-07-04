@@ -150,6 +150,7 @@
     <ClInclude Include="Object-KoopaTroopa.h" />
     <ClInclude Include="Object-Leaf.h" />
     <ClInclude Include="Object-Mushroom.h" />
+    <ClInclude Include="Object-Ptooie.h" />
     <ClInclude Include="Object-QuestionBlock.h" />
     <ClInclude Include="Object-Sponsor.h" />
     <ClInclude Include="Object-VenusFireTrap.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="Object-KoopaTroopa.cpp" />
     <ClCompile Include="Object-Leaf.cpp" />
     <ClCompile Include="Object-Mushroom.cpp" />
+    <ClCompile Include="Object-Ptooie.cpp" />
     <ClCompile Include="Object-QuestionBlock.cpp" />
     <ClCompile Include="Object-Sponsor.cpp" />
     <ClCompile Include="Object-VenusFireTrap.cpp" />
