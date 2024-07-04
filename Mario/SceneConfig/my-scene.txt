@@ -398,8 +398,12 @@ Sprites_Animations/VenusFireTrap.txt
 # Switch
 #15	2040	376
 
+# Tunnel
+16	2272	111	24	1	1	2112	500
+16	2336	496	24	1	2	2336	368
+
 # MARIO
-1	2137	562
+1	2270	82
 
 # Sponsor
 #5	640	32	3	3	840	385	1	1	3	888	385	1	1	3	946	385	2	2

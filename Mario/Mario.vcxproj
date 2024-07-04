@@ -155,6 +155,7 @@
     <ClInclude Include="Object-QuestionBlock.h" />
     <ClInclude Include="Object-Sponsor.h" />
     <ClInclude Include="Object-Switch.h" />
+    <ClInclude Include="Object-Tunnel.h" />
     <ClInclude Include="Object-VenusFireTrap.h" />
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="Portal.h" />

@@ -17,6 +17,7 @@
 #include "Object-VenusFireTrap.h"
 #include "Object-Sponsor.h"
 #include "Object-Switch.h"
+#include "Object-Tunnel.h"
 
 #define MARIO_WALKING_SPEED		0.1f
 #define MARIO_RUNNING_SPEED		0.2f
@@ -180,6 +181,7 @@ class CMario : public CGameObject
 	void OnCollisionWithLevelItems(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e);
 	void OnCollisionWithBreakableBrick(vector<LPCOLLISIONEVENT> events);
+	void OnCollisionWithTunnel(LPCOLLISIONEVENT e);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();
@@ -220,7 +222,7 @@ public:
 
 	void OnNoCollision(DWORD dt);
 	void OnCollisionWith(vector<LPCOLLISIONEVENT> events);
-	void OnOverlapseWith(vector<LPCOLLISIONEVENT> events) {};
+	void OnOverlapseWith(vector<LPCOLLISIONEVENT> events);
 
 	void SetLevel(int l);
 	void StartUntouchable() { untouchable = 1; untouchable_start = GetTickCount64(); }

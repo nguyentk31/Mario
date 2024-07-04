@@ -50,6 +50,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 		OBJECT_TYPE_PTOOIE,
 		OBJECT_TYPE_COIN,
 		OBJECT_TYPE_LEAF,
+		OBJECT_TYPE_TUNNEL,
 	};
 
 }
@@ -248,6 +249,16 @@ void CPlayScene::_ParseSection_OBJECTS(string line)
 		obj = new CSponsor(x, y, objects_type, objects_properties);
 		break;
 	}
+	case OBJECT_TYPE_TUNNEL:
+	{
+		float w = (float)atof(tokens[3].c_str());
+		float h = (float)atof(tokens[4].c_str());
+		int in_dir = atoi(tokens[5].c_str());
+		float teleportX = (float)atof(tokens[6].c_str());
+		float teleportY = (float)atof(tokens[7].c_str());
+		obj = new CTunnel(x, y, w, h, in_dir, teleportX, teleportY);
+		break;
+	}
 
 	default:
 		DebugOut(L"[ERROR] Invalid object type: %d\n", object_type);
@@ -382,7 +393,7 @@ void CPlayScene::Update(DWORD dt)
 
 	if (cx < 0) cx = 0;
 
-	CGame::GetInstance()->SetCamPos(cx, 460.0f /*cy*/);
+	CGame::GetInstance()->SetCamPos(cx, 350.0f /*cy*/);
 
 	PurgeDeletedObjects();
 }
@@ -399,8 +410,8 @@ void CPlayScene::AddObject(LPGAMEOBJECT obj)
 	int objtype = obj->GetObjectTypeID();
 	int objpos = static_cast<int>(objects.size());
 
-	// Skip sponsor objects when rendering
-	if (objtype != OBJECT_TYPE_SPONSOR) {
+	// Skip sponsor, tunnel objects when rendering
+	if (objtype != OBJECT_TYPE_SPONSOR && objtype != OBJECT_TYPE_TUNNEL) {
 		// Find the position of object in Render order
 		int renderpos = 0;
 		for (size_t i = 0; i < orderRenderOfObjectsType.size(); i++)

@@ -120,6 +120,9 @@
     <ClInclude Include="Object-Switch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Object-Tunnel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp">

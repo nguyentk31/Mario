@@ -15,6 +15,7 @@
 #include "Object-VenusFireTrap.h"
 #include "Object-Ptooie.h"
 #include "Object-Switch.h"
+#include "Object-Tunnel.h"
 //#include "Koopas.h"
 
 

@@ -109,6 +109,29 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 	
 }
 
+void CMario::OnOverlapseWith(vector<LPCOLLISIONEVENT> events)
+{
+	LPCOLLISIONEVENT e = events[0];
+	if (e->obj->GetObjectTypeID() == OBJECT_TYPE_TUNNEL)
+		OnCollisionWithTunnel(e);
+}
+
+void CMario::OnCollisionWithTunnel(LPCOLLISIONEVENT e)
+{
+	LPGAME game = CGame::GetInstance();
+	CTunnel* tunnel = dynamic_cast<CTunnel*>(e->obj);
+
+	if (
+		(game->IsKeyDown(DIK_DOWN) && tunnel->GetDirection() == TUNNEL_IN_DIRECTION_DOWN)
+		|| (game->IsKeyDown(DIK_UP) && tunnel->GetDirection() == TUNNEL_IN_DIRECTION_UP)
+	) {
+		DebugOut(L"Collision with tunnel\n");
+		float teleportX, teleportY;
+		tunnel->GetTeleportPosition(teleportX, teleportY);
+		SetPosition(teleportX, teleportY);
+	}
+}
+
 void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e) {
 	CKoopaTroopa* koopaTroopa = dynamic_cast<CKoopaTroopa*>(e->obj);
 	int koopaTroopaState = koopaTroopa->GetState();
