@@ -179,6 +179,7 @@ class CMario : public CGameObject
 	void OnCollisionWithQuestionBlock(vector<LPCOLLISIONEVENT> events);
 	void OnCollisionWithLevelItems(LPCOLLISIONEVENT e);
 	void OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e);
+	void OnCollisionWithBreakableBrick(vector<LPCOLLISIONEVENT> events);
 
 	int GetAniIdBig();
 	int GetAniIdSmall();

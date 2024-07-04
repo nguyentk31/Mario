@@ -85,7 +85,7 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 		if (e->obj->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK && e->ny > 0)
 			OnCollisionWithQuestionBlock(events);
 		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK && e->ny > 0)
-			dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
+			OnCollisionWithBreakableBrick(events);
 		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_SWITCH && e->ny < 0)
 			e->obj->SetState(SWITCH_STATE_INACTIVE);
 	} else {
@@ -104,7 +104,7 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 		else if (dynamic_cast<CSponsor*>(e->obj))
 			dynamic_cast<CSponsor*>(e->obj)->SponseObject();
 		else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK)
-			dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
+			OnCollisionWithBreakableBrick(events);
 	}
 	
 }
@@ -152,6 +152,30 @@ void CMario::OnCollisionWithKoopaTroopa(LPCOLLISIONEVENT e) {
 	}
 }
 
+void CMario::OnCollisionWithBreakableBrick(vector<LPCOLLISIONEVENT> events) {
+	if (events[0]->obj->IsBlocking()) {
+		// Find the closest BreakableBrick to hit
+		float closestHitX = 9999999;
+		CBreakableBrick* brickHit = NULL;
+		for (int i = 0; i < events.size(); i++)
+		{
+			float xDistance = abs(x - events[i]->obj->GetX());
+			if (xDistance < closestHitX) {
+				brickHit = dynamic_cast<CBreakableBrick*>(events[i]->obj);
+				closestHitX = xDistance;
+			}
+		}
+
+		if (brickHit == NULL) return;
+		brickHit->Hit();
+	} else {
+		for (auto& event : events) {
+			dynamic_cast<CBreakableBrick*>(event->obj)->Hit();
+		}	
+	}
+}
+
+
 void CMario::OnCollisionWithLevelItems(LPCOLLISIONEVENT e)
 {
 	LevelUp();
@@ -160,6 +184,8 @@ void CMario::OnCollisionWithLevelItems(LPCOLLISIONEVENT e)
 
 void CMario::OnCollisionWithQuestionBlock(vector<LPCOLLISIONEVENT> events)
 {
+	LPCOLLISIONEVENT e = events[0];
+	
 	// Find the closest QuestionBlock to hit
 	float closestHitX = 9999999;
 	CQuestionBlock* QuestionBlockHit = NULL;
