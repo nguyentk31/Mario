@@ -430,7 +430,20 @@ int CMario::GetAniIdRaccoon()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (abs(ax) == MARIO_ACCEL_RUN_X)
+		if (swingingTailOnFly) {
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_LEFT;
+			swingingTailOnFly = false;
+		} else if (vy > 0)
+		{
+			if (nx >= 0)
+				aniId = ID_ANI_MARIO_RACCOON_FALL_RIGHT;
+			else
+				aniId = ID_ANI_MARIO_RACCOON_FALL_LEFT;
+		}
+		else if (abs(ax) == MARIO_ACCEL_RUN_X)
 		{
 			if (nx >= 0)
 				aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_RIGHT;
@@ -541,6 +554,11 @@ void CMario::SetState(int state)
 				vy = -MARIO_JUMP_RUN_SPEED_Y;
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
+		} else {
+			if (level == MARIO_LEVEL_RACCOON) {
+				swingingTailOnFly = true;
+				vy -= MARIO_JUMP_SPEED_Y/1.4;
+			}
 		}
 		break;
 
