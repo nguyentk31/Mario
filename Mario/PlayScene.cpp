@@ -59,6 +59,7 @@ CPlayScene::CPlayScene(int id, LPCWSTR filePath):
 #define SCENE_SECTION_UNKNOWN -1
 #define SCENE_SECTION_ASSETS	1
 #define SCENE_SECTION_OBJECTS	2
+#define SCENE_SECTION_PROPERTIES 3
 
 #define ASSETS_SECTION_UNKNOWN -1
 #define ASSETS_SECTION_SPRITES 1
@@ -97,6 +98,18 @@ void CPlayScene::_ParseSection_ASSETS(string line)
 	wstring path = ToWSTR(tokens[0]);
 	
 	LoadAssets(path.c_str());
+}
+
+void CPlayScene::_ParseSection_Property(string line)
+{
+	vector<string> tokens = split(line);
+	if (tokens.size() < 2) return;
+	if (tokens[0] == "width")
+		sceneWidth = (float)atof(tokens[1].c_str());
+	else if (tokens[0] == "height")
+		sceneHeight = (float)atof(tokens[1].c_str());
+	else
+		DebugOut(L"[ERROR] Unknown game setting: %s\n", ToWSTR(tokens[0]).c_str());
 }
 
 void CPlayScene::_ParseSection_ANIMATIONS(string line)
@@ -322,7 +335,8 @@ void CPlayScene::Load()
 	{
 		string line(str);
 
-		if (line[0] == '#') continue;	// skip comment lines	
+		if (line[0] == '#') continue;	// skip comment lines
+		if (line == "[PROPERTIES]") { section = SCENE_SECTION_PROPERTIES; continue; }; 	
 		if (line == "[ASSETS]") { section = SCENE_SECTION_ASSETS; continue; };
 		if (line == "[OBJECTS]") { section = SCENE_SECTION_OBJECTS; continue; };
 		if (line[0] == '[') { section = SCENE_SECTION_UNKNOWN; continue; }	
@@ -331,7 +345,8 @@ void CPlayScene::Load()
 		// data section
 		//
 		switch (section)
-		{ 
+		{
+			case SCENE_SECTION_PROPERTIES: _ParseSection_Property(line); break; 
 			case SCENE_SECTION_ASSETS: _ParseSection_ASSETS(line); break;
 			case SCENE_SECTION_OBJECTS: _ParseSection_OBJECTS(line); break;
 		}
@@ -384,16 +399,35 @@ void CPlayScene::Update(DWORD dt)
 	if (player == NULL) return; 
 
 	// Update camera to follow mario
-	float cx, cy;
-	player->GetPosition(cx, cy);
-
+	float cx, cy, marioX, marioY;
+	player->GetPosition(marioX, marioY);
 	CGame *game = CGame::GetInstance();
-	cx -= game->GetBackBufferWidth() / 2;
-	cy -= game->GetBackBufferHeight() / 2;
+	game->GetCamPos(cx, cy);
 
-	if (cx < 0) cx = 0;
+	cx = marioX - game->GetBackBufferWidth() / 2;
+	if (cx < 0)
+		cx = 0;
+	else if (cx > sceneWidth - game->GetBackBufferWidth())
+		cx = sceneWidth - game->GetBackBufferWidth();
 
-	CGame::GetInstance()->SetCamPos(cx, 350.0f /*cy*/);
+	float limitTop, limitBottom;
+	limitTop = cy + 32;
+	limitBottom = cy + game->GetBackBufferHeight() - 32;
+	if (marioY < limitTop)
+	{
+		float dif = limitTop - marioY;
+		cy -= dif;
+	} else if (marioY > limitBottom)
+	{
+		float dif = marioY - limitBottom;
+		cy += dif;
+	}
+	if (cy < 0)
+		cy = 0;
+	else if (cy > sceneHeight - game->GetBackBufferHeight())
+		cy = sceneHeight - game->GetBackBufferHeight();
+
+	CGame::GetInstance()->SetCamPos(cx, cy);
 
 	PurgeDeletedObjects();
 }

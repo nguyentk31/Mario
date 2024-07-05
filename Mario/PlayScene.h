@@ -23,7 +23,10 @@ class CPlayScene: public CScene
 {
 protected: 
 	// A play scene has to have player, right? 
-	LPGAMEOBJECT player;					
+	LPGAMEOBJECT player;
+
+	// Width and height of the scene
+	float sceneWidth, sceneHeight;					
 
 	vector<LPGAMEOBJECT> objects;
 	// Numbers of each object type in the scene
@@ -38,6 +41,7 @@ protected:
 
 	void _ParseSection_ASSETS(string line);
 	void _ParseSection_OBJECTS(string line);
+	void _ParseSection_Property(string line);
 
 	void LoadAssets(LPCWSTR assetFile);
 	

@@ -1,4 +1,8 @@
 # list of object assets to load in this scene
+[PROPERTIES]
+width	2816
+height	656
+
 [ASSETS]
 Sprites_Animations/Backgrounds.txt
 Sprites_Animations/Box.txt
@@ -403,7 +407,8 @@ Sprites_Animations/VenusFireTrap.txt
 16	2336	496	24	1	2	2336	368
 
 # MARIO
-1	2270	82
+#1	2270	82
+1	2250	82
 
 # Sponsor
 #5	640	32	3	3	840	385	1	1	3	888	385	1	1	3	946	385	2	2
