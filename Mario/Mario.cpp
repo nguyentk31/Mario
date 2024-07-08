@@ -6,7 +6,16 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	vy += ay * dt;
+	if (swingingTailOnFly) {
+		if (GetTickCount64() - wagging_start > MARIO_WAGGING_TIME) {
+			swingingTailOnFly = false;
+			vy += ay * dt;
+		} else 
+			vy = MARIO_GRAVITY*30;
+
+	} else {
+		vy += ay * dt;
+	}
 	vx += ax * dt;
 	
 	if (abs(vx) > abs(maxVx)) vx = maxVx;
@@ -72,12 +81,15 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 {
 	LPCOLLISIONEVENT e = events[0];
 	if (e->obj->IsBlocking()) {
-		if (e->ny != 0 && e->obj->IsBlocking())
+		if (e->ny != 0)
 		{
 			vy = 0;
-			if (e->ny < 0) isOnPlatform = true;
+			if (e->ny < 0){
+				isOnPlatform = true;
+				swingingTailOnFly = false;
+			} 
 		}
-		else if (e->nx != 0 && e->obj->IsBlocking())
+		else if (e->nx != 0)
 		{
 			vx = 0;
 		}
@@ -435,7 +447,6 @@ int CMario::GetAniIdRaccoon()
 				aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_RIGHT;
 			else
 				aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_LEFT;
-			swingingTailOnFly = false;
 		} else if (vy > 0)
 		{
 			if (nx >= 0)
@@ -557,7 +568,7 @@ void CMario::SetState(int state)
 		} else {
 			if (level == MARIO_LEVEL_RACCOON) {
 				swingingTailOnFly = true;
-				vy -= MARIO_JUMP_SPEED_Y/1.4;
+				wagging_start = GetTickCount64();
 			}
 		}
 		break;
