@@ -43,7 +43,7 @@ void CKoopaTroopa::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 			if (e->obj->GetObjectTypeID() == OBJECT_TYPE_QUESTION_BLOCK)
 				e->obj->SetState(QUESTION_BLOCK_STATE_BOUNCING);
 			else if (e->obj->GetObjectTypeID() == OBJECT_TYPE_BREAKABLE_BRICK)
-				dynamic_cast<CBreakableBrick*>(e->obj)->Hit();
+				dynamic_cast<CBreakableBrick*>(e->obj)->Hit(x);
 			
 		} else if (state == KOOPA_TROOPA_STATE_JUMPING && e->ny < 0)
 			vy = -KOOPA_TROPPA_JUMPING_SPEED;

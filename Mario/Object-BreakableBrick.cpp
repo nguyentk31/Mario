@@ -54,15 +54,16 @@ int CBreakableBrick::IsCollidable()
 	return (this->state == BB_STATE_BOUCING || this->state == BB_STATE_BROKING || this->state == BB_STATE_COIN);
 }
 
-void CBreakableBrick::Hit()
+void CBreakableBrick::Hit(float x)
 {
+	hitX = x;
 	switch (state)
 	{
 	case BB_STATE_NORMAL:
-		if (BBType == BB_TYPE_SWITCH)
-			SetState(BB_STATE_BOUCING);
-		else if (BBType == BB_TYPE_COIN)
+		if (BBType == BB_TYPE_COIN)
 			SetState(BB_STATE_BROKING);
+		else
+			SetState(BB_STATE_BOUCING);
 		break;
 	case BB_STATE_COIN:
 		isDeleted = true;
@@ -84,7 +85,12 @@ void CBreakableBrick::SetState(int state)
 		case BB_STATE_UNBROKEN: 
 			vy = 0;
 			y = originalY;
-			((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(new CSwitch(x, y-SWITCH_SIZE));
+			if (BBType == BB_TYPE_SWITCH)
+				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(new CSwitch(x, y-SWITCH_SIZE));
+			else {
+				int directionX = hitX>x ? -1 : 1;
+				((CPlayScene*)CGame::GetInstance()->GetCurrentScene())->AddObject(new CMushroom(x, y, directionX));
+			}
 			break;
 		case BB_STATE_BROKING:
 			brokingX = BB_SIZE;

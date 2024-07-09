@@ -212,12 +212,12 @@ void CMario::OnCollisionWithBreakableBrick(vector<LPCOLLISIONEVENT> events) {
 		}
 
 		if (brickHit == NULL) return;
-		brickHit->Hit();
+		brickHit->Hit(x);
 	} else {
 		for (auto& event : events) {
 			if (event->obj->GetState() == BB_STATE_COIN)
 				coin++;
-			dynamic_cast<CBreakableBrick*>(event->obj)->Hit();
+			dynamic_cast<CBreakableBrick*>(event->obj)->Hit(x);
 		}	
 	}
 }

@@ -15,6 +15,7 @@
 
 #define BB_TYPE_COIN 1
 #define BB_TYPE_SWITCH 2
+#define BB_TYPE_MUSHROOM 3
 
 #define BB_BROKING_SPEED 0.1f
 #define BB_BOUCING_SPEED 0.2f
@@ -33,6 +34,7 @@ protected:
 	float originalY;
 	float ay;
 	int BBType;
+	float hitX;
 public:
 	CBreakableBrick(float x, float y, int type) : CGameObject(OBJECT_TYPE_BREAKABLE_BRICK, x, y) {
 		ay = BB_GRAVITY;
@@ -47,5 +49,5 @@ public:
 	int IsBlocking();
 	int IsCollidable();
 	void SetState(int state);
-	void Hit();
+	void Hit(float x);
 };
