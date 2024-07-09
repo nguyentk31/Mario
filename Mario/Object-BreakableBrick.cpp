@@ -51,7 +51,7 @@ int CBreakableBrick::IsBlocking()
 
 int CBreakableBrick::IsCollidable()
 {
-	return (this->state == BB_STATE_BOUCING || this->state == BB_STATE_BROKING);
+	return (this->state == BB_STATE_BOUCING || this->state == BB_STATE_BROKING || this->state == BB_STATE_COIN);
 }
 
 void CBreakableBrick::Hit()
