@@ -30,5 +30,12 @@
 # Star Box
 6100	650	106	675	131	30
 
+#Flower
+7200	20	104	35	119	40
+#Mushroom
+7100	2	104	17	119	40
+#Star
+7300	146	104	161	119	40
+
 # ani_id	sprite1_id	time1	sprite2_id	time2	...
 [ANIMATIONS]
