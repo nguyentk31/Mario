@@ -127,11 +127,17 @@
 #define ID_ANI_MARIO_RACCOON_BRACE_RIGHT 2082
 #define ID_ANI_MARIO_RACCOON_BRACE_LEFT 2081
 
-#define ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_RIGHT 2042
-#define ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_LEFT 2041
+#define ID_ANI_MARIO_RACOON_SWING_TAIL_ON_JUMP_RIGHT 2042
+#define ID_ANI_MARIO_RACOON_SWING_TAIL_ON_JUMP_LEFT 2041
 
-#define ID_ANI_MARIO_RACCOON_FALL_RIGHT 2032
-#define ID_ANI_MARIO_RACCOON_FALL_LEFT 2031
+#define ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_RIGHT 2102
+#define ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_LEFT 2101
+
+#define ID_ANI_MARIO_RACCOON_JUMP_FALL_RIGHT 2032
+#define ID_ANI_MARIO_RACCOON_JUMP_FALL_LEFT 2031
+
+#define ID_ANI_MARIO_RACCOON_FLY_FALL_RIGHT 2112
+#define ID_ANI_MARIO_RACCOON_FLY_FALL_LEFT 2111
 
 
 
@@ -160,6 +166,7 @@
 #define MARIO_UNTOUCHABLE_TIME 2500
 #define MARIO_KICKING_TIME 500
 #define MARIO_WAGGING_TIME 300
+#define MARIO_FLYING_TIME 3000
 
 class CMario : public CGameObject
 {
@@ -170,12 +177,14 @@ class CMario : public CGameObject
 
 	int level; 
 	int untouchable; 
-	ULONGLONG untouchable_start, wagging_start;
+	ULONGLONG untouchable_start, wagging_start, flying_start;
 	BOOLEAN isOnPlatform;
 	int coin;
 	bool usingSkill;
 	bool holdingShell;
 	bool swingingTailOnFly = false;
+	bool swingingTailOnJump = false;
+	bool flying = false;
 	LPKOOPATROOPA shell;
 
 	void OnCollisionWithGoomba(LPCOLLISIONEVENT e);

@@ -6,13 +6,21 @@
 
 void CMario::Update(DWORD dt, vector<LPGAMEOBJECT> *coObjects)
 {
-	if (swingingTailOnFly) {
+	if (swingingTailOnJump) {
 		if (GetTickCount64() - wagging_start > MARIO_WAGGING_TIME) {
-			swingingTailOnFly = false;
+			swingingTailOnJump = false;
 			vy += ay * dt;
 		} else 
 			vy = MARIO_GRAVITY*30;
 
+	} else if (flying) {
+		if (GetTickCount64() - flying_start > MARIO_FLYING_TIME) {
+			flying = false;
+			swingingTailOnFly = false;
+		} else if (swingingTailOnFly && GetTickCount64() - wagging_start > MARIO_WAGGING_TIME) {
+			swingingTailOnFly = false;
+		}
+		vy += ay * dt/10;
 	} else {
 		vy += ay * dt;
 	}
@@ -86,7 +94,9 @@ void CMario::OnCollisionWith(vector<LPCOLLISIONEVENT> events)
 			vy = 0;
 			if (e->ny < 0){
 				isOnPlatform = true;
+				swingingTailOnJump = false;
 				swingingTailOnFly = false;
+				flying = false;
 			} 
 		}
 		else if (e->nx != 0)
@@ -442,31 +452,41 @@ int CMario::GetAniIdRaccoon()
 	int aniId = -1;
 	if (!isOnPlatform)
 	{
-		if (swingingTailOnFly) {
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_LEFT;
-		} else if (vy > 0)
-		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_RACCOON_FALL_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_RACCOON_FALL_LEFT;
-		}
-		else if (abs(ax) == MARIO_ACCEL_RUN_X)
-		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_LEFT;
-		}
-		else
-		{
-			if (nx >= 0)
-				aniId = ID_ANI_MARIO_RACCOON_JUMP_WALK_RIGHT;
-			else
-				aniId = ID_ANI_MARIO_RACCOON_JUMP_WALK_LEFT;
+		if (flying) {
+			if (swingingTailOnFly) {
+				if (nx >= 0)
+					aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_RIGHT;
+				else
+					aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_FLY_LEFT;
+			} else if (vy > 0) {
+				if (nx >= 0)
+					aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_RIGHT;
+				else
+					aniId = ID_ANI_MARIO_RACCOON_JUMP_RUN_LEFT;
+			} else {
+				if (nx >= 0)
+					aniId = ID_ANI_MARIO_RACCOON_FLY_FALL_RIGHT;
+				else
+					aniId = ID_ANI_MARIO_RACCOON_FLY_FALL_LEFT;
+			}
+		} else {
+			if (swingingTailOnJump) {
+				if (nx >= 0)
+					aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_JUMP_RIGHT;
+				else
+					aniId = ID_ANI_MARIO_RACOON_SWING_TAIL_ON_JUMP_LEFT;
+			} else if (vy > 0)
+			{
+				if (nx >= 0)
+					aniId = ID_ANI_MARIO_RACCOON_JUMP_FALL_RIGHT;
+				else
+					aniId = ID_ANI_MARIO_RACCOON_JUMP_FALL_LEFT;
+			} else if (vy < 0) {
+				if (nx >= 0)
+					aniId = ID_ANI_MARIO_RACCOON_JUMP_WALK_RIGHT;
+				else
+					aniId = ID_ANI_MARIO_RACCOON_JUMP_WALK_LEFT;
+			}
 		}
 	}
 	else
@@ -561,13 +581,25 @@ void CMario::SetState(int state)
 		if (isSitting) break;
 		if (isOnPlatform)
 		{
-			if (abs(this->vx) == MARIO_RUNNING_SPEED)
-				vy = -MARIO_JUMP_RUN_SPEED_Y;
+			if (abs(this->vx) == MARIO_RUNNING_SPEED) {
+				if (level == MARIO_LEVEL_RACCOON) {
+					flying = true;
+					flying_start = GetTickCount64();
+					vy = -MARIO_JUMP_RUN_SPEED_Y/3;
+				} else {
+					vy = -MARIO_JUMP_RUN_SPEED_Y;
+				}
+
+			}
 			else
 				vy = -MARIO_JUMP_SPEED_Y;
-		} else {
-			if (level == MARIO_LEVEL_RACCOON) {
+		} else if (level == MARIO_LEVEL_RACCOON) {
+			if (flying) {
+				vy = -MARIO_JUMP_SPEED_Y/3.0f;
 				swingingTailOnFly = true;
+				wagging_start = GetTickCount64();
+			} else {
+				swingingTailOnJump = true;
 				wagging_start = GetTickCount64();
 			}
 		}
