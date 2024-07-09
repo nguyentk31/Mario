@@ -411,8 +411,8 @@ void CPlayScene::Update(DWORD dt)
 		cx = sceneWidth - game->GetBackBufferWidth();
 
 	float limitTop, limitBottom;
-	limitTop = cy + 32;
-	limitBottom = cy + game->GetBackBufferHeight() - 32;
+	limitTop = cy + 96;
+	limitBottom = cy + game->GetBackBufferHeight() - 40;
 	if (marioY < limitTop)
 	{
 		float dif = limitTop - marioY;
