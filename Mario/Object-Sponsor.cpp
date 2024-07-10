@@ -27,11 +27,11 @@ void CSponsor::CreateObject(int type, vector<double> properties) {
 	switch (type)
 	{
 	case OBJECT_TYPE_GOOMBA: {
-		obj = new CGoomba((float)properties[0], (float)properties[1], (int)properties[2], (int)properties[3]); break;
+		obj = new CGoomba((float)properties[0], (float)properties[1], (int)properties[2], (int)properties[3]);
 		break;
 	}
 	case OBJECT_TYPE_KOOPA_TROOPA: {
-		// obj = new CKoopaTroopa(x, y);
+		obj = new CKoopaTroopa((float)properties[0], (float)properties[1], (int)properties[2], (int)properties[3]);
 		break;
 	}
 	default:
